@@ -1,3 +1,7 @@
+import { Options } from "./Options";
+import { translate } from "./i18n/t";
+import { resolveLocale } from "./i18n/resolveLocale";
+
 class Auth {
     private static instance: Auth;
 
@@ -22,7 +26,12 @@ class Auth {
             }
         }
 
-        throw new Error("Session token not exists");
+        throw new Error(
+            translate(
+                resolveLocale(Options.getInstance().get().locale),
+                "error-session-token-not-set"
+            )
+        );
     }
 
     authorizationHeader() {

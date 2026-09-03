@@ -10,5 +10,8 @@
     "something-went-wrong": "مشکلی پیش آمد.",
     "result-win": "بردی!",
     "result-loss": "باختی",
-    "result-tie": "مساوی شد"
+    "result-tie": "مساوی شد",
+    "error-game-id-not-set": "شناسه بازی تنظیم نشده است",
+    "error-competition-id-not-set": "شناسه مسابقه تنظیم نشده است",
+    "error-session-token-not-set": "توکن نشست وجود ندارد"
 }

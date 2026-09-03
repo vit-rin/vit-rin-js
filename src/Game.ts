@@ -5,6 +5,8 @@ import axios from "axios";
 import { Options } from "./Options";
 import { OptionsType } from "./types/options";
 import { isFailedState } from "./states/isFailedState";
+import { translate } from "./i18n/t";
+import { resolveLocale } from "./i18n/resolveLocale";
 
 class Game {
     private options: OptionsType;
@@ -30,7 +32,12 @@ class Game {
             this.fetch();
         } else {
             setRecoil(isFailedState, true);
-            throw new Error("Game ID is not set");
+            throw new Error(
+                translate(
+                    resolveLocale(this.options.locale),
+                    "error-game-id-not-set"
+                )
+            );
         }
     }
 

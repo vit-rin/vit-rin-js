@@ -6,6 +6,8 @@ import { competitionDataState } from "./states/competitionDataState";
 import { setRecoil } from "recoil-nexus";
 import { OptionsType } from "./types/options";
 import { Options } from "./Options";
+import { translate } from "./i18n/t";
+import { resolveLocale } from "./i18n/resolveLocale";
 
 class Competition {
     private static instance: Competition;
@@ -141,7 +143,12 @@ class Competition {
 
     async finalize(): Promise<any> {
         if (!this.id) {
-            throw new Error("Competition ID is not set");
+            throw new Error(
+                translate(
+                    resolveLocale(this.options.locale),
+                    "error-competition-id-not-set"
+                )
+            );
         }
 
         try {

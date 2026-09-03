@@ -10,5 +10,8 @@
     "something-went-wrong": "Something went wrong.",
     "result-win": "You win!",
     "result-loss": "You lose",
-    "result-tie": "It's a tie"
+    "result-tie": "It's a tie",
+    "error-game-id-not-set": "Game ID is not set",
+    "error-competition-id-not-set": "Competition ID is not set",
+    "error-session-token-not-set": "Session token not exists"
 }
