@@ -11,11 +11,14 @@ import { scoreState } from "../states/scoreState";
 import { Controls } from "../Controls";
 import { Check } from "../Check";
 import { adsShowingState } from "../states/adsShowingState";
+import { useTranslation } from "../i18n/t";
 
 export default function PauseScreen() {
     const options: OptionsType = Options.getInstance().get();
 
     const controls = Controls.getInstance();
+
+    const { t } = useTranslation();
 
     const check = Check.getInstance();
 
@@ -67,7 +70,7 @@ export default function PauseScreen() {
                             onClick={resume}
                         >
                             <PlayIcon />
-                            <span className="tw-ml-2">Continue</span>
+                            <span className="tw-ml-2">{t("continue")}</span>
                         </button>
 
                         <button
@@ -75,7 +78,7 @@ export default function PauseScreen() {
                             onClick={replay}
                         >
                             <ReplayIcon />
-                            <span className="tw-ml-2">Replay</span>
+                            <span className="tw-ml-2">{t("replay")}</span>
                         </button>
 
                         <button
@@ -83,7 +86,7 @@ export default function PauseScreen() {
                             onClick={exit}
                         >
                             <ExitIcon />
-                            <span className="tw-ml-2">Exit</span>
+                            <span className="tw-ml-2">{t("exit")}</span>
                         </button>
                     </div>
                 </div>

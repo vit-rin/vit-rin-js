@@ -6,10 +6,12 @@ import { gamePausedState } from "../states/gamePausedState";
 import { gameDataState } from "../states/gameDataState";
 import { Controls } from "../Controls";
 import { Competition } from "../Competition";
+import { useTranslation } from "../i18n/t";
 
 export default function StartScreen() {
     const controls = Controls.getInstance();
     const competition = Competition.getInstance();
+    const { t } = useTranslation();
 
     const [gamePlaying] = useRecoilState(gamePlayingState);
     const [gamePaused] = useRecoilState(gamePausedState);
@@ -34,18 +36,19 @@ export default function StartScreen() {
 
                             <div className="tw-text-2xl tw-text-on-dark tw-font-capsule tw-mb-8">
                                 <span className="tw-text-gold">
-                                    Winner {">"}
+                                    {t("winner")}
                                 </span>{" "}
                                 {competition.getType() == "solo" &&
                                     gameData.metadata.min_score_to_reward}
-                                {competition.getType() == "pvp" && "Max Score"}
+                                {competition.getType() == "pvp" &&
+                                    t("max-score")}
                             </div>
 
                             <button
                                 className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl"
                                 onClick={start}
                             >
-                                Start
+                                {t("start")}
                             </button>
                         </div>
                     </div>

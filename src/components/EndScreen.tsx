@@ -16,10 +16,12 @@ import { competitionDataState } from "../states/competitionDataState";
 import { Check } from "../Check";
 import { adsShowingState } from "../states/adsShowingState";
 import { adsCurrentPlaceState } from "../states/adsCurrentPlaceState";
+import { useTranslation } from "../i18n/t";
 
 export default function EndScreen() {
     const controls = Controls.getInstance();
     const competition = Competition.getInstance();
+    const { t } = useTranslation();
 
     const [gameCurrent] = useRecoilState(gameCurrentState);
     const [gameData] = useRecoilState<any>(gameDataState);
@@ -158,7 +160,7 @@ export default function EndScreen() {
                                     onClick={replay}
                                 >
                                     <ReplayIcon />
-                                    <span className="tw-ml-2">Replay</span>
+                                    <span className="tw-ml-2">{t("replay")}</span>
                                 </button>
                             )}
 
@@ -168,7 +170,7 @@ export default function EndScreen() {
                                     onClick={rematch}
                                 >
                                     <ReplayIcon />
-                                    <span className="tw-ml-2">Rematch</span>
+                                    <span className="tw-ml-2">{t("rematch")}</span>
                                 </button>
                             )}
 
@@ -177,7 +179,7 @@ export default function EndScreen() {
                                 onClick={exit}
                             >
                                 <ExitIcon />
-                                <span className="tw-ml-2">Exit</span>
+                                <span className="tw-ml-2">{t("exit")}</span>
                             </button>
                         </div>
                     </div>

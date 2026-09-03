@@ -9,6 +9,7 @@
         "declarationDir": "./build",
         "esModuleInterop": true,
         "moduleResolution": "node",
+        "resolveJsonModule": true,
         "strict": true
     },
     "include": ["src/**/*"],
