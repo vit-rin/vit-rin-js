@@ -55,7 +55,7 @@ export default function PauseScreen() {
     return (
         <>
             {gameCurrent === "paused" && (
-                <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-left-0 tw-right-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay">
+                <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay">
                     <div className="tw-container">
                         <div className="tw-text-5xl tw-text-on-dark tw-text-center tw-font-capsule tw-mb-8">
                             {gameData.name}
@@ -70,7 +70,7 @@ export default function PauseScreen() {
                             onClick={resume}
                         >
                             <PlayIcon />
-                            <span className="tw-ml-2">{t("continue")}</span>
+                            <span className="tw-ms-2">{t("continue")}</span>
                         </button>
 
                         <button
@@ -78,7 +78,7 @@ export default function PauseScreen() {
                             onClick={replay}
                         >
                             <ReplayIcon />
-                            <span className="tw-ml-2">{t("replay")}</span>
+                            <span className="tw-ms-2">{t("replay")}</span>
                         </button>
 
                         <button
@@ -86,7 +86,7 @@ export default function PauseScreen() {
                             onClick={exit}
                         >
                             <ExitIcon />
-                            <span className="tw-ml-2">{t("exit")}</span>
+                            <span className="tw-ms-2">{t("exit")}</span>
                         </button>
                     </div>
                 </div>

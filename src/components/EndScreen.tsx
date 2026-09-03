@@ -61,7 +61,7 @@ export default function EndScreen() {
     return (
         <>
             {gameCurrent === "ended" && competitionResult && (
-                <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-left-0 tw-right-0 tw-bottom-0 tw-bg-scrim/60 tw-z-overlay">
+                <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/60 tw-z-overlay">
                     <div className="tw-container">
                         <div className="tw-bg-surface tw-rounded-[2rem] tw-pt-16 tw-pb-4 tw-px-4">
                             {competitionResult.result === "win" && (
@@ -84,7 +84,10 @@ export default function EndScreen() {
                                         )}
                                     </div>
 
-                                    <div className="tw-text-2xl tw-text-foreground tw-text-center tw-font-capsule tw-mb-8">
+                                    <div
+                                        className="tw-text-2xl tw-text-foreground tw-text-center tw-font-capsule tw-mb-8"
+                                        dir="ltr"
+                                    >
                                         <span
                                             className={`${
                                                 competitionResult.result ===
@@ -125,7 +128,7 @@ export default function EndScreen() {
                                                 .wallet.data.slug ===
                                                 "v-ton" && <VTonIcon />}
 
-                                            <span className="tw-ml-4 tw-text-2xl">
+                                            <span className="tw-ms-4 tw-text-2xl">
                                                 +
                                                 {
                                                     competitionResult
@@ -139,7 +142,7 @@ export default function EndScreen() {
                                         <div className="tw-bg-surface-sunken tw-text-surface-sunken-foreground tw-rounded-2xl tw-p-4 tw-mb-4 tw-flex tw-justify-start tw-items-center tw-font-capsule tw-w-full">
                                             <XPIcon />
 
-                                            <span className="tw-ml-4 tw-text-2xl">
+                                            <span className="tw-ms-4 tw-text-2xl">
                                                 +{competitionResult.rewards.xp}
                                             </span>
                                         </div>
@@ -157,7 +160,7 @@ export default function EndScreen() {
                                     onClick={replay}
                                 >
                                     <ReplayIcon />
-                                    <span className="tw-ml-2">{t("replay")}</span>
+                                    <span className="tw-ms-2">{t("replay")}</span>
                                 </button>
                             )}
 
@@ -167,7 +170,7 @@ export default function EndScreen() {
                                     onClick={rematch}
                                 >
                                     <ReplayIcon />
-                                    <span className="tw-ml-2">{t("rematch")}</span>
+                                    <span className="tw-ms-2">{t("rematch")}</span>
                                 </button>
                             )}
 
@@ -176,7 +179,7 @@ export default function EndScreen() {
                                 onClick={exit}
                             >
                                 <ExitIcon />
-                                <span className="tw-ml-2">{t("exit")}</span>
+                                <span className="tw-ms-2">{t("exit")}</span>
                             </button>
                         </div>
                     </div>

@@ -24,7 +24,10 @@ export default function ScoreNumber() {
     }, [score]);
 
     return (
-        <div className="tw-font-bold tw-font-capsule tw-text-foreground tw-text-xl">
+        <div
+            className="tw-font-bold tw-font-capsule tw-text-foreground tw-text-xl"
+            dir="ltr"
+        >
             {gameData && (
                 <>
                     <span className={scoreNumberColor}>
