@@ -20,4 +20,8 @@ export const DefaultOptions: OptionsType = {
     autoCheckAuth: true,
 
     autoOpenAds: true,
+
+    theme: "dark",
+
+    locale: "en",
 };
