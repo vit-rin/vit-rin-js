@@ -9,7 +9,7 @@ export default function Topbar() {
     const options: OptionsType = Options.getInstance().get();
 
     return (
-        <div className="tw-fixed tw-top-0 tw-inset-x-0 px-4 tw-w-full tw-bg-surface tw-z-topbar">
+        <div className="tw-fixed tw-top-0 tw-inset-x-0 tw-px-4 tw-w-full tw-bg-surface tw-z-topbar">
             <div className="tw-container">
                 <div className="tw-flex tw-justify-between tw-items-center tw-h-12">
                     {typeof options.pauseCallback !== "undefined" &&

@@ -168,7 +168,7 @@ export default function EndScreen() {
                             {competition.getType() ==
                                 CompetitionType.Solo && (
                                 <button
-                                    className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
+                                    className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
                                     onClick={replay}
                                 >
                                     <ReplayIcon />
@@ -179,7 +179,7 @@ export default function EndScreen() {
                             {competition.getType() ==
                                 CompetitionType.Pvp && (
                                 <button
-                                    className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
+                                    className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
                                     onClick={rematch}
                                 >
                                     <ReplayIcon />
@@ -188,7 +188,7 @@ export default function EndScreen() {
                             )}
 
                             <button
-                                className="tw-border-2 tw-border-foreground tw-font-capsule tw-font-bold tw-text-foreground tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center"
+                                className="tw-border-2 tw-border-foreground tw-font-capsule tw-font-bold tw-text-foreground tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center"
                                 onClick={exit}
                             >
                                 <ExitIcon />
