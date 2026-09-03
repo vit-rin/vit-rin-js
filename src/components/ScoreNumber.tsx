@@ -18,13 +18,13 @@ export default function ScoreNumber() {
     useEffect(() => {
         if (competitionData) {
             if (score > competitionData.target_score) {
-                setScoreNumberColor("tw-text-[#FFBF44]");
+                setScoreNumberColor("tw-text-gold");
             }
         }
     }, [score]);
 
     return (
-        <div className="tw-font-bold tw-font-[capsule] tw-text-white tw-text-xl">
+        <div className="tw-font-bold tw-font-capsule tw-text-foreground tw-text-xl">
             {gameData && (
                 <>
                     <span className={scoreNumberColor}>

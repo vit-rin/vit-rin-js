@@ -20,7 +20,7 @@ export default function MuteButton() {
 
     return (
         <button
-            className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-w-8 tw-h-8 tw-bg-[#58595B] tw-rounded-lg"
+            className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-w-8 tw-h-8 tw-bg-control tw-text-foreground tw-rounded-lg"
             onClick={muteToggle}
         >
             {sound === "mute" ? <MuteIcon /> : <UnmuteIcon />}
