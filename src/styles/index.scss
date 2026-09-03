@@ -5,6 +5,51 @@
     font-weight: 900;
 }
 
+@font-face {
+    font-family: iransansxv;
+    src: url("https://play.games.vit-rin.com/assets/fonts/IRANSansXV.woff2")
+            format("woff-variations"),
+        url("https://play.games.vit-rin.com/assets/fonts/IRANSansXV.woff")
+            format("woff");
+    font-weight: 100 900;
+    font-display: fallback;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+// Theme tokens are scoped to the SDK's own root (#vtgrar) rather than :root,
+// so they can never collide with a host page's own --color-* variables.
+#vtgrar[data-vg-theme="dark"] {
+    --vg-color-background: 64 64 65;
+    --vg-color-foreground: 255 255 255;
+    --vg-color-surface: 64 64 65;
+    --vg-color-surface-sunken: 31 32 35;
+    --vg-color-surface-sunken-foreground: 224 226 226;
+    --vg-color-control: 88 89 91;
+    --vg-color-scrim: 31 32 35;
+}
+
+#vtgrar[data-vg-theme="light"] {
+    --vg-color-background: 241 242 242;
+    --vg-color-foreground: 88 89 91;
+    --vg-color-surface: 255 255 255;
+    --vg-color-surface-sunken: 224 226 226;
+    --vg-color-surface-sunken-foreground: 64 64 65;
+    --vg-color-control: 224 226 226;
+    --vg-color-scrim: 31 32 35;
+}
+
+// Brand/status colors are constant across both modes.
+#vtgrar {
+    --vg-color-primary: 139 107 175;
+    --vg-color-gold: 255 191 68;
+    --vg-color-muted: 166 168 171;
+    --vg-color-warning: 237 89 107;
+    --vg-color-crown: 255 173 0;
+    --vg-color-vton: 244 111 94;
+    --vg-color-vton-stroke: 223 77 70;
+    --vg-color-xp: 99 136 255;
+    --vg-color-xp-stroke: 71 121 235;
+}
