@@ -7,5 +7,8 @@
     "rematch": "Rematch",
     "exit": "Exit",
     "loading": "Loading...",
-    "something-went-wrong": "Something went wrong."
+    "something-went-wrong": "Something went wrong.",
+    "result-win": "You win!",
+    "result-loss": "You lose",
+    "result-tie": "It's a tie"
 }

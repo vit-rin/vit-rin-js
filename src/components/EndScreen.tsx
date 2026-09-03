@@ -73,18 +73,15 @@ export default function EndScreen() {
                             {competitionResult.result !== "unknown" ? (
                                 <>
                                     <div
-                                        className={`tw-text-5xl tw-text-center tw-font-capsule tw-mb-4 tw-capitalize ${
+                                        className={`tw-text-5xl tw-text-center tw-font-capsule tw-mb-4 ${
                                             competitionResult.result === "win"
                                                 ? "tw-text-gold"
                                                 : "tw-text-muted"
                                         }`}
                                     >
-                                        You{" "}
-                                        {competitionResult.result === "loss"
-                                            ? "lose"
-                                            : competitionResult.result}
-                                        {competitionResult.result === "win" &&
-                                            "!"}
+                                        {t(
+                                            `result-${competitionResult.result}`
+                                        )}
                                     </div>
 
                                     <div className="tw-text-2xl tw-text-foreground tw-text-center tw-font-capsule tw-mb-8">
