@@ -33,7 +33,7 @@ export default function AdsScreen() {
     return (
         <>
             {adsShowing && options.autoOpenAds && (
-                <div className="tw-flex tw-items-center tw-justify-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-left-0 tw-right-0 tw-bottom-0 tw-bg-black tw-bg-opacity-70 tw-fixed-auto tw-z-50">
+                <div className="tw-flex tw-items-center tw-justify-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-left-0 tw-right-0 tw-bottom-0 tw-bg-scrim/70 tw-z-ads">
                     <iframe
                         src={`https://ads.vit-rin.com/view?place=${adsCurrentPlace}&page_url=${encodeURIComponent(
                             window.location.origin + window.location.pathname

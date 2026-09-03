@@ -52,18 +52,18 @@ export default function PauseScreen() {
     return (
         <>
             {gameCurrent === "paused" && (
-                <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-left-0 tw-right-0 tw-bottom-0 tw-bg-[#1F2023CC] tw-z-50">
+                <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-left-0 tw-right-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay">
                     <div className="tw-container">
-                        <div className="tw-text-5xl tw-text-white tw-text-center tw-font-[capsule] tw-mb-8">
+                        <div className="tw-text-5xl tw-text-on-dark tw-text-center tw-font-capsule tw-mb-8">
                             {gameData.name}
                         </div>
 
-                        <div className="tw-text-2xl tw-text-white tw-font-[capsule] tw-text-center tw-mb-8">
+                        <div className="tw-text-2xl tw-text-on-dark tw-font-capsule tw-text-center tw-mb-8">
                             {score}
                         </div>
 
                         <button
-                            className="tw-bg-[#8B6BAF] tw-font-[capsule] tw-font-bold tw-text-white tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
+                            className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
                             onClick={resume}
                         >
                             <PlayIcon />
@@ -71,7 +71,7 @@ export default function PauseScreen() {
                         </button>
 
                         <button
-                            className="tw-border-2 tw-border-white tw-font-[capsule] tw-font-bold tw-text-white tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
+                            className="tw-border-2 tw-border-on-dark tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
                             onClick={replay}
                         >
                             <ReplayIcon />
@@ -79,7 +79,7 @@ export default function PauseScreen() {
                         </button>
 
                         <button
-                            className="tw-border-2 tw-border-white tw-font-[capsule] tw-font-bold tw-text-white tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center"
+                            className="tw-border-2 tw-border-on-dark tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center"
                             onClick={exit}
                         >
                             <ExitIcon />

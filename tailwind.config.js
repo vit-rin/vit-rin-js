@@ -34,6 +34,7 @@ module.exports = {
                 "vton-stroke": "rgb(var(--vg-color-vton-stroke) / <alpha-value>)",
                 xp: "rgb(var(--vg-color-xp) / <alpha-value>)",
                 "xp-stroke": "rgb(var(--vg-color-xp-stroke) / <alpha-value>)",
+                "on-dark": "rgb(var(--vg-color-on-dark) / <alpha-value>)",
             },
             fontFamily: {
                 capsule: [

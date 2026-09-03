@@ -26,14 +26,14 @@ export default function StartScreen() {
                 !gamePlaying &&
                 !gamePaused &&
                 gameData && (
-                    <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-left-0 tw-right-0 tw-bottom-0 tw-bg-[#1F2023CC] tw-z-50">
+                    <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-left-0 tw-right-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay">
                         <div className="tw-container tw-text-center">
-                            <div className="tw-text-5xl tw-text-white tw-font-[capsule] tw-mb-8">
+                            <div className="tw-text-5xl tw-text-on-dark tw-font-capsule tw-mb-8">
                                 {gameData.name}
                             </div>
 
-                            <div className="tw-text-2xl tw-text-white tw-font-[capsule] tw-mb-8">
-                                <span className="tw-text-[#FFBF44]">
+                            <div className="tw-text-2xl tw-text-on-dark tw-font-capsule tw-mb-8">
+                                <span className="tw-text-gold">
                                     Winner {">"}
                                 </span>{" "}
                                 {competition.getType() == "solo" &&
@@ -42,7 +42,7 @@ export default function StartScreen() {
                             </div>
 
                             <button
-                                className="tw-bg-[#8B6BAF] tw-font-[capsule] tw-font-bold tw-text-white tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl"
+                                className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl"
                                 onClick={start}
                             >
                                 Start
