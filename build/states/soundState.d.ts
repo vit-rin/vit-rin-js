@@ -1,1 +1,2 @@
-export declare const soundState: import("recoil").RecoilState<string>;
+import { SoundStateValue } from "../constants";
+export declare const soundState: import("recoil").RecoilState<SoundStateValue>;

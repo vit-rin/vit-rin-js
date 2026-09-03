@@ -7,6 +7,7 @@ import { gameDataState } from "../states/gameDataState";
 import { Controls } from "../Controls";
 import { Competition } from "../Competition";
 import { useTranslation } from "../i18n/t";
+import { GameState, CompetitionType } from "../constants";
 
 export default function StartScreen() {
     const controls = Controls.getInstance();
@@ -24,7 +25,7 @@ export default function StartScreen() {
 
     return (
         <>
-            {gameCurrent === "initialized" &&
+            {gameCurrent === GameState.Initialized &&
                 !gamePlaying &&
                 !gamePaused &&
                 gameData && (
@@ -38,10 +39,11 @@ export default function StartScreen() {
                                 <span className="tw-text-gold">
                                     {t("winner")}
                                 </span>{" "}
-                                {competition.getType() == "solo" &&
+                                {competition.getType() ==
+                                    CompetitionType.Solo &&
                                     gameData.metadata.min_score_to_reward}
-                                {competition.getType() == "pvp" &&
-                                    t("max-score")}
+                                {competition.getType() ==
+                                    CompetitionType.Pvp && t("max-score")}
                             </div>
 
                             <button

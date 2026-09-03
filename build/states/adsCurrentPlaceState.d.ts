@@ -1,1 +1,2 @@
-export declare const adsCurrentPlaceState: import("recoil").RecoilState<string>;
+import { AdsPlaceValue } from "../constants";
+export declare const adsCurrentPlaceState: import("recoil").RecoilState<AdsPlaceValue>;

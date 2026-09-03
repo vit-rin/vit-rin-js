@@ -5,6 +5,7 @@ import { gameDataState } from "../states/gameDataState";
 import { Competition } from "../Competition";
 import { gameEndedState } from "../states/gameEndedState";
 import { competitionDataState } from "../states/competitionDataState";
+import { CompetitionType } from "../constants";
 
 export default function ScoreNumber() {
     const competition = Competition.getInstance();
@@ -31,14 +32,22 @@ export default function ScoreNumber() {
             {gameData && (
                 <>
                     <span className={scoreNumberColor}>
-                        {score} {competition.getType() == "solo" && ">"}
-                        {competition.getType() == "pvp" && score == 0 && "-"}
-                        {competition.getType() == "pvp" && score > 0 && ">"}
+                        {score}{" "}
+                        {competition.getType() == CompetitionType.Solo &&
+                            ">"}
+                        {competition.getType() == CompetitionType.Pvp &&
+                            score == 0 &&
+                            "-"}
+                        {competition.getType() == CompetitionType.Pvp &&
+                            score > 0 &&
+                            ">"}
                     </span>{" "}
-                    {competition.getType() == "solo" &&
+                    {competition.getType() == CompetitionType.Solo &&
                         gameData.metadata.min_score_to_reward}
-                    {competition.getType() == "pvp" && !gameEnded && "..."}
-                    {competition.getType() == "pvp" &&
+                    {competition.getType() == CompetitionType.Pvp &&
+                        !gameEnded &&
+                        "..."}
+                    {competition.getType() == CompetitionType.Pvp &&
                         gameEnded &&
                         competitionData.target_score}
                 </>

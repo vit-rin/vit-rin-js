@@ -17,6 +17,12 @@ import { Check } from "../Check";
 import { adsShowingState } from "../states/adsShowingState";
 import { adsCurrentPlaceState } from "../states/adsCurrentPlaceState";
 import { useTranslation } from "../i18n/t";
+import {
+    GameState,
+    CompetitionResult,
+    CompetitionType,
+    AdsPlace,
+} from "../constants";
 
 export default function EndScreen() {
     const controls = Controls.getInstance();
@@ -33,7 +39,7 @@ export default function EndScreen() {
     const check = Check.getInstance();
 
     const replay = () => {
-        setAdsCurrentPlace("before-replay-game");
+        setAdsCurrentPlace(AdsPlace.BeforeReplayGame);
         setAdsShowing(true);
         replayAfterAdsWatched();
     };
@@ -60,21 +66,24 @@ export default function EndScreen() {
 
     return (
         <>
-            {gameCurrent === "ended" && competitionResult && (
+            {gameCurrent === GameState.Ended && competitionResult && (
                 <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/60 tw-z-overlay">
                     <div className="tw-container">
                         <div className="tw-bg-surface tw-rounded-[2rem] tw-pt-16 tw-pb-4 tw-px-4">
-                            {competitionResult.result === "win" && (
+                            {competitionResult.result ===
+                                CompetitionResult.Win && (
                                 <div className="tw-mb-4">
                                     <WinIcon className="tw-mx-auto" />
                                 </div>
                             )}
 
-                            {competitionResult.result !== "unknown" ? (
+                            {competitionResult.result !==
+                            CompetitionResult.Unknown ? (
                                 <>
                                     <div
                                         className={`tw-text-5xl tw-text-center tw-font-capsule tw-mb-4 ${
-                                            competitionResult.result === "win"
+                                            competitionResult.result ===
+                                            CompetitionResult.Win
                                                 ? "tw-text-gold"
                                                 : "tw-text-muted"
                                         }`}
@@ -91,7 +100,7 @@ export default function EndScreen() {
                                         <span
                                             className={`${
                                                 competitionResult.result ===
-                                                "win"
+                                                CompetitionResult.Win
                                                     ? "tw-text-gold"
                                                     : "tw-text-muted"
                                             }`}
@@ -99,7 +108,7 @@ export default function EndScreen() {
                                         <span
                                             className={`${
                                                 competitionResult.result ===
-                                                "win"
+                                                CompetitionResult.Win
                                                     ? "tw-text-gold"
                                                     : "tw-text-muted"
                                             }`}
@@ -107,18 +116,20 @@ export default function EndScreen() {
                                             {score}
                                             <span className="tw-mx-2">
                                                 {competitionResult.result ===
-                                                "win"
+                                                CompetitionResult.Win
                                                     ? ">"
                                                     : competitionResult.result ===
-                                                      "tie"
+                                                      CompetitionResult.Tie
                                                     ? "="
                                                     : "<"}
                                             </span>
                                         </span>
-                                        {competition.getType() == "solo" &&
+                                        {competition.getType() ==
+                                            CompetitionType.Solo &&
                                             gameData.metadata
                                                 .min_score_to_reward}
-                                        {competition.getType() == "pvp" &&
+                                        {competition.getType() ==
+                                            CompetitionType.Pvp &&
                                             competitionData.target_score}
                                     </div>
 
@@ -154,7 +165,8 @@ export default function EndScreen() {
                                 </div>
                             )}
 
-                            {competition.getType() == "solo" && (
+                            {competition.getType() ==
+                                CompetitionType.Solo && (
                                 <button
                                     className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
                                     onClick={replay}
@@ -164,7 +176,8 @@ export default function EndScreen() {
                                 </button>
                             )}
 
-                            {competition.getType() == "pvp" && (
+                            {competition.getType() ==
+                                CompetitionType.Pvp && (
                                 <button
                                     className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-p-4.25 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
                                     onClick={rematch}

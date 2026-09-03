@@ -8,6 +8,7 @@ import { Competition } from "./Competition";
 import { competitionResultState } from "./states/competitionResultState";
 import { soundState } from "./states/soundState";
 import { scoreState } from "./states/scoreState";
+import { GameState, SoundState } from "./constants";
 
 class Controls {
     private static instance: Controls;
@@ -86,7 +87,7 @@ class Controls {
             this.options.startCallback();
         }
 
-        setRecoil(gameCurrentState, "playing");
+        setRecoil(gameCurrentState, GameState.Playing);
         setRecoil(gamePlayingState, true);
         setRecoil(gamePausedState, false);
 
@@ -98,7 +99,7 @@ class Controls {
             this.options.pauseCallback();
         }
 
-        setRecoil(gameCurrentState, "paused");
+        setRecoil(gameCurrentState, GameState.Paused);
         setRecoil(gamePlayingState, false);
         setRecoil(gamePausedState, true);
     }
@@ -108,7 +109,7 @@ class Controls {
             this.options.resumeCallback();
         }
 
-        setRecoil(gameCurrentState, "playing");
+        setRecoil(gameCurrentState, GameState.Playing);
         setRecoil(gamePlayingState, true);
         setRecoil(gamePausedState, false);
     }
@@ -121,7 +122,7 @@ class Controls {
             this.options.startCallback();
         }
 
-        setRecoil(gameCurrentState, "playing");
+        setRecoil(gameCurrentState, GameState.Playing);
         setRecoil(gamePlayingState, true);
         setRecoil(gamePausedState, false);
 
@@ -134,7 +135,7 @@ class Controls {
     }
 
     end() {
-        setRecoil(gameCurrentState, "ended");
+        setRecoil(gameCurrentState, GameState.Ended);
 
         if (this.options.autoCheckAuth) {
             this.competition.finalize();
@@ -146,7 +147,7 @@ class Controls {
             this.options.muteCallback();
         }
 
-        setRecoil(soundState, "mute");
+        setRecoil(soundState, SoundState.Mute);
     }
 
     unmute() {
@@ -154,7 +155,7 @@ class Controls {
             this.options.unmuteCallback();
         }
 
-        setRecoil(soundState, "unmute");
+        setRecoil(soundState, SoundState.Unmute);
     }
 
     destroy() {

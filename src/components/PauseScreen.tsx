@@ -12,6 +12,7 @@ import { Controls } from "../Controls";
 import { Check } from "../Check";
 import { adsShowingState } from "../states/adsShowingState";
 import { useTranslation } from "../i18n/t";
+import { GameState } from "../constants";
 
 export default function PauseScreen() {
     const options: OptionsType = Options.getInstance().get();
@@ -54,7 +55,7 @@ export default function PauseScreen() {
 
     return (
         <>
-            {gameCurrent === "paused" && (
+            {gameCurrent === GameState.Paused && (
                 <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay">
                     <div className="tw-container">
                         <div className="tw-text-5xl tw-text-on-dark tw-text-center tw-font-capsule tw-mb-8">

@@ -8,6 +8,7 @@ import { OptionsType } from "./types/options";
 import { Options } from "./Options";
 import { translate } from "./i18n/t";
 import { resolveLocale } from "./i18n/resolveLocale";
+import { CompetitionType } from "./constants";
 
 class Competition {
     private static instance: Competition;
@@ -22,7 +23,7 @@ class Competition {
 
     private auth;
 
-    private type: string = "solo";
+    private type: string = CompetitionType.Solo;
 
     private id: string | null = null;
 
@@ -66,7 +67,7 @@ class Competition {
         if (competitionType) {
             this.type = competitionType;
         } else {
-            this.type = "solo";
+            this.type = CompetitionType.Solo;
             console.warn(
                 "Competition type is not set. Solo type is set as default."
             );
@@ -117,7 +118,7 @@ class Competition {
                 `/${this.version}/competitions`,
                 {
                     game_id: this.options.gameId,
-                    competition_type: this.type ?? "solo",
+                    competition_type: this.type ?? CompetitionType.Solo,
                 },
                 {
                     headers: {

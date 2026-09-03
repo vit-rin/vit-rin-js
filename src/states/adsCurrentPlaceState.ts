@@ -1,6 +1,7 @@
 import { atom } from "recoil";
+import { AdsPlace, AdsPlaceValue } from "../constants";
 
-export const adsCurrentPlaceState = atom({
+export const adsCurrentPlaceState = atom<AdsPlaceValue>({
     key: "adsCurrentPlaceState",
-    default: "before-start-game",
+    default: AdsPlace.BeforeStartGame,
 });
