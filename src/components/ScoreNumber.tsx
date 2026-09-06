@@ -20,9 +20,11 @@ export default function ScoreNumber() {
         if (competitionData) {
             if (score > competitionData.target_score) {
                 setScoreNumberColor("tw-text-gold");
+            } else {
+                setScoreNumberColor("");
             }
         }
-    }, [score]);
+    }, [score, competitionData]);
 
     return (
         <div
