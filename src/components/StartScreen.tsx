@@ -61,6 +61,7 @@ export default function StartScreen() {
                             </div>
 
                             <button
+                                type="button"
                                 className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl"
                                 onClick={start}
                             >

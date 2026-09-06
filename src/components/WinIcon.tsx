@@ -3,6 +3,7 @@ import React from "react";
 export default function WinIcon({ className }: any) {
     return (
         <svg
+            aria-hidden="true"
             className={`${className}`}
             width="44"
             height="33"

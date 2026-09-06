@@ -3,6 +3,7 @@ import React from "react";
 export default function PauseIcon() {
     return (
         <svg
+            aria-hidden="true"
             width="18"
             height="20"
             viewBox="0 0 18 20"

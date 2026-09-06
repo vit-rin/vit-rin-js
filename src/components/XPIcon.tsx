@@ -3,6 +3,7 @@ import React from "react";
 export default function XPIcon() {
     return (
         <svg
+            aria-hidden="true"
             width="58"
             height="59"
             viewBox="0 0 58 59"

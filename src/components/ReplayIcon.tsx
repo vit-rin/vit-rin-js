@@ -3,6 +3,7 @@ import React from "react";
 export default function ReplayIcon() {
     return (
         <svg
+            aria-hidden="true"
             width="25"
             height="25"
             viewBox="0 0 25 25"

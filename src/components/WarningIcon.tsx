@@ -3,6 +3,7 @@ import React from "react";
 export default function WarningIcon() {
     return (
         <svg
+            aria-hidden="true"
             width="20"
             height="18"
             viewBox="0 0 20 18"

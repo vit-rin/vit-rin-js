@@ -67,6 +67,7 @@ export default function PauseScreen() {
                         </div>
 
                         <button
+                            type="button"
                             className="tw-bg-primary tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
                             onClick={resume}
                         >
@@ -75,6 +76,7 @@ export default function PauseScreen() {
                         </button>
 
                         <button
+                            type="button"
                             className="tw-border-2 tw-border-foreground tw-font-capsule tw-font-bold tw-text-foreground tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
                             onClick={replay}
                         >
@@ -83,6 +85,7 @@ export default function PauseScreen() {
                         </button>
 
                         <button
+                            type="button"
                             className="tw-border-2 tw-border-foreground tw-font-capsule tw-font-bold tw-text-foreground tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center"
                             onClick={exit}
                         >
