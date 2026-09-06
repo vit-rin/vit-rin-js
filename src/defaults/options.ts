@@ -21,7 +21,7 @@ export const DefaultOptions: OptionsType = {
 
     autoOpenAds: true,
 
-    theme: "dark",
+    theme: "auto",
 
-    locale: "en",
+    locale: "auto",
 };
