@@ -69,7 +69,7 @@ export default function EndScreen() {
             {gameCurrent === GameState.Ended && competitionResult && (
                 <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/60 tw-z-overlay">
                     <div className="tw-container">
-                        <div className="tw-bg-surface tw-rounded-[2rem] tw-pt-16 tw-pb-4 tw-px-4">
+                        <div className="tw-bg-surface tw-shadow-2xl tw-rounded-[2rem] tw-pt-16 tw-pb-4 tw-px-4">
                             {competitionResult.result ===
                                 CompetitionResult.Win && (
                                 <div className="tw-mb-4">

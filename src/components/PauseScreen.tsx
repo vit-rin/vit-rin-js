@@ -58,11 +58,11 @@ export default function PauseScreen() {
             {gameCurrent === GameState.Paused && (
                 <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay">
                     <div className="tw-container">
-                        <div className="tw-text-5xl tw-text-on-dark tw-text-center tw-font-capsule tw-mb-8">
+                        <div className="tw-text-5xl tw-text-foreground tw-text-center tw-font-capsule tw-mb-8">
                             {gameData.name}
                         </div>
 
-                        <div className="tw-text-2xl tw-text-on-dark tw-font-capsule tw-text-center tw-mb-8">
+                        <div className="tw-text-2xl tw-text-foreground tw-font-capsule tw-text-center tw-mb-8">
                             {score}
                         </div>
 
@@ -75,7 +75,7 @@ export default function PauseScreen() {
                         </button>
 
                         <button
-                            className="tw-border-2 tw-border-on-dark tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
+                            className="tw-border-2 tw-border-foreground tw-font-capsule tw-font-bold tw-text-foreground tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center tw-mb-4"
                             onClick={replay}
                         >
                             <ReplayIcon />
@@ -83,7 +83,7 @@ export default function PauseScreen() {
                         </button>
 
                         <button
-                            className="tw-border-2 tw-border-on-dark tw-font-capsule tw-font-bold tw-text-on-dark tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center"
+                            className="tw-border-2 tw-border-foreground tw-font-capsule tw-font-bold tw-text-foreground tw-text-lg tw-px-4 tw-w-full tw-h-14 tw-rounded-xl tw-flex tw-justify-center tw-items-center"
                             onClick={exit}
                         >
                             <ExitIcon />

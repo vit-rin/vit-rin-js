@@ -31,11 +31,11 @@ export default function StartScreen() {
                 gameData && (
                     <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay">
                         <div className="tw-container tw-text-center">
-                            <div className="tw-text-5xl tw-text-on-dark tw-font-capsule tw-mb-8">
+                            <div className="tw-text-5xl tw-text-foreground tw-font-capsule tw-mb-8">
                                 {gameData.name}
                             </div>
 
-                            <div className="tw-text-2xl tw-text-on-dark tw-font-capsule tw-mb-8">
+                            <div className="tw-text-2xl tw-text-foreground tw-font-capsule tw-mb-8">
                                 <span className="tw-text-gold">
                                     {t("winner")}
                                 </span>{" "}
