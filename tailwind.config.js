@@ -2,6 +2,12 @@
 module.exports = {
     content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
     prefix: "tw-",
+    // The SDK is injected into a host game's page, so Tailwind's global
+    // Preflight must never ship: it would reset the host's own styles.
+    // The equivalent resets live scoped to #vtgrar in styles/index.scss.
+    corePlugins: {
+        preflight: false,
+    },
     theme: {
         container: {
             center: true,
