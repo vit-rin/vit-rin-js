@@ -29,7 +29,7 @@ export default function StartScreen() {
                 !gamePlaying &&
                 !gamePaused &&
                 gameData && (
-                    <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay">
+                    <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-dvh tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay">
                         <div className="tw-container tw-text-center">
                             <div className="tw-text-5xl tw-text-foreground tw-font-capsule tw-mb-8">
                                 {gameData.name}

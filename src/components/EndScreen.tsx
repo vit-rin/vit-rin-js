@@ -67,7 +67,7 @@ export default function EndScreen() {
     return (
         <>
             {gameCurrent === GameState.Ended && competitionResult && (
-                <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/60 tw-z-overlay">
+                <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-dvh tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/60 tw-z-overlay">
                     <div className="tw-container">
                         <div className="tw-bg-surface tw-shadow-2xl tw-rounded-[2rem] tw-pt-16 tw-pb-4 tw-px-4">
                             {competitionResult.result ===
@@ -97,14 +97,6 @@ export default function EndScreen() {
                                         className="tw-text-2xl tw-text-foreground tw-text-center tw-font-capsule tw-mb-8"
                                         dir="ltr"
                                     >
-                                        <span
-                                            className={`${
-                                                competitionResult.result ===
-                                                CompetitionResult.Win
-                                                    ? "tw-text-gold"
-                                                    : "tw-text-muted"
-                                            }`}
-                                        ></span>
                                         <span
                                             className={`${
                                                 competitionResult.result ===

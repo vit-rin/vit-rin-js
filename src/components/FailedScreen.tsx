@@ -6,7 +6,7 @@ export default function FailedScreen() {
     const { t } = useTranslation();
 
     return (
-        <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-screen tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay tw-text-foreground tw-text-lg">
+        <div className="tw-flex tw-justify-center tw-items-center tw-fixed tw-h-dvh tw-w-full tw-top-0 tw-inset-x-0 tw-bottom-0 tw-bg-scrim/80 tw-z-overlay tw-text-foreground tw-text-lg">
             <div className="tw-container tw-flex tw-justify-center tw-items-center">
                 <WarningIcon />
                 <span className="tw-ms-2 tw-font-capsule">
