@@ -78,6 +78,37 @@ var vitrin = new VitGames({
 });
 ```
 
+## Theme and language
+
+The SDK's UI ships in a dark and a light theme, and in English and Persian
+(with full RTL support). Both follow the player's environment by default:
+
+```js
+{
+    theme: "auto",  // "dark" | "light" | "auto"
+    locale: "auto", // "en" | "fa" | "auto"
+}
+```
+
+`theme: "auto"` follows the browser's `prefers-color-scheme`. `locale: "auto"`
+reads the `?locale=` query parameter on the game URL first, then falls back to
+the shared `NEXT_LOCALE` cookie. Because games run inside an iframe, the query
+parameter is the reliable signal — browsers that block third-party cookies
+will not expose the cookie to the frame.
+
+Pin either one to opt out of the automatic behaviour:
+
+```js
+var vitrin = new VitGames({
+    gameId: "YOUR_GAME_ID",
+    theme: "dark",
+    locale: "fa",
+});
+```
+
+The SDK's styles are scoped to its own root element and Tailwind's global
+Preflight is disabled, so adding the SDK never restyles your game's page.
+
 ## Methods
 
 Let SDK be synced with current score by setting it in every score increment. Call `set()` method of the score object and pass the score number.
@@ -117,6 +148,10 @@ export const DefaultOptions: OptionsType = {
     autoCheckAuth: true,
 
     autoOpenAds: true,
+
+    theme: "auto",
+
+    locale: "auto",
 };
 ```
 
