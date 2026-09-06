@@ -38,10 +38,24 @@ export default function StartScreen() {
                             <div className="tw-text-2xl tw-text-foreground tw-font-capsule tw-mb-8">
                                 <span className="tw-text-gold">
                                     {t("winner")}
-                                </span>{" "}
+                                </span>
+
+                                {/* The ">" is a bidi-mirrored neutral: isolated
+                                    as LTR so it keeps its shape and its place
+                                    between the label and the target in RTL. */}
+                                <bdi
+                                    dir="ltr"
+                                    className="tw-text-gold tw-mx-2"
+                                >
+                                    &gt;
+                                </bdi>
+
                                 {competition.getType() ==
-                                    CompetitionType.Solo &&
-                                    gameData.metadata.min_score_to_reward}
+                                    CompetitionType.Solo && (
+                                    <bdi dir="ltr">
+                                        {gameData.metadata.min_score_to_reward}
+                                    </bdi>
+                                )}
                                 {competition.getType() ==
                                     CompetitionType.Pvp && t("max-score")}
                             </div>
