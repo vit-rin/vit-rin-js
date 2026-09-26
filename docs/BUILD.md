@@ -22,9 +22,9 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 
 | | |
 |---|---|
-| Branch `dev` | **does not exist** |
+| Branch `dev` | exists — forked from `main` @ `5f17553` (2.1.23) |
 | Surfaces | 0 of 8 |
-| **Next** | **S0 — pick the baseline and branch** |
+| **Next** | **S1 — Core** |
 
 ### What blocks this repo
 
@@ -37,18 +37,20 @@ S0 is not blocked and should be settled now — it is a decision, not work.
 
 ---
 
-## S0 — Baseline and branch 🔴 DECISION NEEDED
+## S0 — Baseline and branch ✅
 
-Two candidate starting points differ materially:
+Two candidate starting points differed materially:
 
 | Candidate | Version | Has |
 |---|---|---|
-| `main` @ `5f17553` | 2.1.23 | the older snapshot currently checked out here |
+| `main` @ `5f17553` | 2.1.23 | the older snapshot currently checked out here — **chosen** |
 | `origin/feat/theme-tokens-i18n-foundation` | 2.3.0 | `src/i18n/`, `src/theme/`, `theme`/`locale` options |
 
-- [ ] Choose one and record the choice in [SDK-CONTRACT.md](SDK-CONTRACT.md)
-- [ ] `git switch -c dev <chosen-ref>` and push it
-- [ ] Decide what carries over from the old source and what is rewritten
+- [x] Choose one and record the choice in [SDK-CONTRACT.md](SDK-CONTRACT.md)
+- [x] `git switch -c dev <chosen-ref>` and push it
+- [ ] Decide what carries over from the old source and what is rewritten — in
+      particular whether `i18n`/`theme` from the unused candidate are ported
+      into S3 (UI overlay) or reworked from scratch
 - *Done when:* `dev` exists on the remote and the contract names its baseline.
 
 ## S1 — Core

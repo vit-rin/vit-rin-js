@@ -1,7 +1,6 @@
 # vit-rin-js — v2 rewrite
 
-The rewrite happens on branch `dev`, which **does not exist yet** — picking its
-baseline is the first task in the tracker.
+The rewrite happens on branch `dev`, forked from `main` @ `5f17553` (v2.1.23).
 
 | Document | |
 |---|---|

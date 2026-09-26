@@ -2,19 +2,19 @@
 
 **Status:** Specification — the rewrite has not started.
 
-> The current `main` is the previous SDK. The rewrite happens on branch `dev`,
-> which **does not exist yet**. Rewrite this document from reality once the
-> headless core works, and change the status to Binding.
+> The current `main` is the previous SDK. The rewrite happens on branch `dev`.
+> Rewrite this document from reality once the headless core works, and change
+> the status to Binding.
 
-## Baseline decision — required before branching
+## Baseline decision — recorded
 
-Two checkouts differ:
+`dev` is branched from `main` @ `5f17553`, v2.1.23 — the snapshot already
+checked out here.
 
-- `vit-rin-v2/vit-rin-js` — `main` at `5f17553`, v2.1.23
-- `origin/feat/theme-tokens-i18n-foundation` — v2.3.0, adds `src/i18n/`,
-  `src/theme/` and the `theme` / `locale` options
-
-Pick one, branch `dev` from it, record the choice here.
+Not used: `origin/feat/theme-tokens-i18n-foundation` — v2.3.0, adds
+`src/i18n/`, `src/theme/` and the `theme` / `locale` options. Whether those
+land in the rewrite (S3 — UI overlay) or get reworked from scratch is still
+open, tracked in [BUILD.md](BUILD.md) S0.
 
 ## Rules
 
