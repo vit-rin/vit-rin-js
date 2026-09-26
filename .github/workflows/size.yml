@@ -1,0 +1,49 @@
+name: Bundle size budget
+
+# Enforces the S1 rule that @vit-rin/js's headless core (the `.` export)
+# never grows an accidental React dependency or otherwise balloons. Runs the
+# real build, then checks the headless ESM output and the CDN IIFE against
+# the limits in package.json's "size-limit" field — see docs/SDK-CONTRACT.md.
+#
+# NOTE: this workflow has not been run in CI yet (no push access from the
+# environment that authored it) — see docs/BUILD.md S1's "CI size budget"
+# box, left [~] until a real run is observed.
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'rollup.config.mjs'
+      - 'tsconfig.json'
+      - '.github/workflows/size.yml'
+  push:
+    branches: [main, dev]
+
+jobs:
+  size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Check bundle size budget
+        run: npm run size
+
+      - name: Confirm no React in the headless core
+        run: |
+          if grep -rlq "react" build/esm/index.js build/esm/core; then
+            echo "::error::React leaked into the headless core (build/esm/index.js or build/esm/core/**)."
+            exit 1
+          fi

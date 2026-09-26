@@ -45,13 +45,13 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 
 ## S1 — Core
 
-- [ ] Rollup config — inputs `index` and `ui`; ESM (preserveModules), CJS, minified IIFE for CDN
-- [ ] `rollup-plugin-dts` per entry; `package.json` `exports` maps `.` and `./ui`
-- [ ] React external for ESM/CJS, **bundled** for IIFE
-- [ ] `core/transport` — fetch wrapper, timeouts, typed errors from the API's `error.code`
-- [ ] `core/auth` — **token only**. No cookie read, no implicit redirect. Auto-refresh on 401 with a single retry
-- [ ] `core/idempotency` — key on every mutating call
-- [ ] CI size budget on the headless bundle
+- [x] Rollup config — inputs `index` and `ui`; ESM (preserveModules), CJS, minified IIFE for CDN
+- [x] `rollup-plugin-dts` per entry; `package.json` `exports` maps `.` and `./ui`
+- [x] React external for ESM/CJS, **bundled** for IIFE
+- [x] `core/transport` — fetch wrapper, timeouts, typed errors from the API's `error.code`
+- [x] `core/auth` — **token only**. No cookie read, no implicit redirect. Auto-refresh on 401 with a single retry
+- [x] `core/idempotency` — key on every mutating call
+- [~] CI size budget on the headless bundle — workflow and `size-limit` config are in place and pass locally (`npm run build && npm run size`); not yet observed running in GitHub Actions since this environment can't push or watch a run
 - *Done when:* `source-map-explorer` shows **no React** in the headless ESM output, and `@arethetypeswrong/cli --pack .` is clean.
 
 ## S2 — Surfaces
