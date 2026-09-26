@@ -22,7 +22,7 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 
 | | |
 |---|---|
-| Branch `dev` | exists — forked from `main` @ `5f17553` (2.1.23) |
+| Branch `dev` | clean slate — no source carried over |
 | Surfaces | 0 of 8 |
 | **Next** | **S1 — Core** |
 
@@ -33,25 +33,14 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 | `api/openapi/public.yaml` | backend Phase 3 | S2 onward |
 | Real token auth | backend Phase 1 | S1 |
 
-S0 is not blocked and should be settled now — it is a decision, not work.
-
 ---
 
-## S0 — Baseline and branch ✅
+## S0 — Clean slate ✅
 
-Two candidate starting points differed materially:
-
-| Candidate | Version | Has |
-|---|---|---|
-| `main` @ `5f17553` | 2.1.23 | the older snapshot currently checked out here — **chosen** |
-| `origin/feat/theme-tokens-i18n-foundation` | 2.3.0 | `src/i18n/`, `src/theme/`, `theme`/`locale` options |
-
-- [x] Choose one and record the choice in [SDK-CONTRACT.md](SDK-CONTRACT.md)
-- [x] `git switch -c dev <chosen-ref>` and push it
-- [ ] Decide what carries over from the old source and what is rewritten — in
-      particular whether `i18n`/`theme` from the unused candidate are ported
-      into S3 (UI overlay) or reworked from scratch
-- *Done when:* `dev` exists on the remote and the contract names its baseline.
+- [x] `dev` holds only docs — no source is carried over from any prior branch
+- [x] `i18n`/`theme` are built fresh in S3 (UI overlay), not ported
+- [x] `build/` is gitignored from the start
+- *Done when:* `dev` has an empty `src/` and the contract has no baseline to record.
 
 ## S1 — Core
 
@@ -88,10 +77,8 @@ Blocked on `public.yaml`. Each is a thin typed wrapper over the generated client
 
 ## S4 — Release
 
-- [ ] `build/` removed from the repository and added to `.gitignore` — it is a release artifact
 - [ ] CI publishes to npm and the CDN on a tag
-- [ ] Rewrite `README.md` for v2; rewrite [SDK-CONTRACT.md](SDK-CONTRACT.md) from what was built and change its status from Specification to Binding
-- [ ] Migration note for integrators moving off cookie auth
+- [ ] Write `README.md` usage docs; rewrite [SDK-CONTRACT.md](SDK-CONTRACT.md) from what was built and change its status from Specification to Binding
 - *Done when:* a sample game served from a **non-vit-rin origin**, holding only a token, completes authenticate → open competition → finalize → verdict.
 
 ---

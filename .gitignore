@@ -1,14 +1,15 @@
+node_modules/
+build/
+dist/
+*.tgz
+coverage/
+
 .env
-.env.backup
-.env.production
+.env.*
 
 .DS_Store
-.idea
+.idea/
+.vscode/
 
-node_modules
-npm-debug.log
-
-yarn-error.log
-
-Homestead.json
-Homestead.yaml
+npm-debug.log*
+yarn-error.log*
