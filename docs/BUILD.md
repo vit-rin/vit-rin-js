@@ -30,8 +30,9 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 
 | Need | From | Blocks |
 |---|---|---|
+| `api/openapi/auth.yaml` | backend — **spec ready now**, [adr/0007](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/adr/0007-token-model.md) | `core/auth`'s shape now; exercising it live once Phase 1 ships |
 | `api/openapi/public.yaml` | backend Phase 3 | S2 onward |
-| Real token auth | backend Phase 1 | S1 |
+| Real token auth running | backend Phase 1 | verifying S1's `core/auth` end to end |
 
 ---
 
