@@ -36,6 +36,10 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 
 ---
 
+## Tracker upkeep
+
+- [ ] **Reconcile this tracker with [ROADMAP.md §3](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/ROADMAP.md#3-current-state-verified-against-code)** — the status table still reads "clean slate" though S1's core is built; every task tagged with its milestone (M0)
+
 ## S0 — Clean slate ✅
 
 - [x] `dev` holds only docs — no source is carried over from any prior branch
@@ -51,7 +55,8 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 - [x] `core/transport` — fetch wrapper, timeouts, typed errors from the API's `error.code`
 - [x] `core/auth` — **token only**. No cookie read, no implicit redirect. Auto-refresh on 401 with a single retry
 - [x] `core/idempotency` — key on every mutating call
-- [~] CI size budget on the headless bundle — workflow and `size-limit` config are in place and pass locally (`npm run build && npm run size`); not yet observed running in GitHub Actions since this environment can't push or watch a run
+- [~] CI size budget on the headless bundle — workflow and `size-limit` config are in place and pass locally (`npm run build && npm run size`); not yet observed running in GitHub Actions since this environment can't push or watch a run (M0)
+- [ ] CI runs `typecheck` and the unit tests alongside the size budget, observed green in GitHub Actions (M0)
 - *Done when:* `source-map-explorer` shows **no React** in the headless ESM output, and `@arethetypeswrong/cli --pack .` is clean.
 
 ## S2 — Surfaces
