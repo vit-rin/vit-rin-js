@@ -24,7 +24,7 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 |---|---|
 | Branch `dev` | S1 core built and unit-tested (transport, token auth with single-retry refresh, idempotency keys, Rollup ESM/CJS/IIFE, size budget); generated types, surfaces, UI overlay and release not built |
 | Surfaces | 0 of 8 |
-| **Next** | **M0** — CI running `typecheck`, tests and the size budget; then M1 — exercise S1 against the real API |
+| **Next** | **M0 — open.** D-14: staging resolved (`vit-stage-all-eu-01`); production deferred to M6. Here: CI observed running `typecheck`, tests and the size budget. M1 — exercise S1 against the real API — is the work after M0 |
 
 ### What blocks this repo
 
