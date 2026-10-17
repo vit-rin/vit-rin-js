@@ -24,7 +24,7 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 |---|---|
 | Branch `dev` | S1 core built and unit-tested (transport, token auth with single-retry refresh, idempotency keys, Rollup ESM/CJS/IIFE, size budget); generated types, surfaces, UI overlay and release not built |
 | Surfaces | 0 of 8 |
-| **Next** | **M1** — exercise S1 against the real API. M0 is proven on staging (`vit-stage-all-eu-01`; D-14: production deferred to M6) |
+| **Next** | **M1** — exercise S1 against the real API, once the backend honours `Idempotency-Key` and rate-limits. M0 is proven on staging (`vit-stage-all-eu-01`; D-14: production deferred to M6) |
 
 ### What blocks this repo
 
@@ -57,6 +57,7 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 - [x] `core/idempotency` — key on every mutating call
 - [x] CI size budget on the headless bundle — the `Bundle size budget` workflow ran green on the `dev` push for `70335e7`, and the same commands pass locally (`npm run build && npm run size`) (M0)
 - [x] CI runs `typecheck` and the unit tests alongside the size budget — `ci.yml` runs `typecheck` and `npm test` on every push and pull request, and `size.yml` runs the build and the budget; `CI` and `Bundle size budget` are both green on the `dev` push for `70335e7` (M0)
+- [ ] **S1 exercised against the real API** — refresh with a single retry; a replayed mutating call with the same idempotency key returns the original response; a `429` surfaces as a typed error carrying `Retry-After` (M1)
 - *Done when:* `source-map-explorer` shows **no React** in the headless ESM output, and `@arethetypeswrong/cli --pack .` is clean.
 
 ## S2 — Surfaces
