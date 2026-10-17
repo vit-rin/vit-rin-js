@@ -13,7 +13,7 @@
 
 export { Transport } from './core/transport';
 export type { TransportConfig, RequestOptions, FetchLike } from './core/transport';
-export { ApiError, NetworkError, TimeoutError, VitRinError } from './core/transport/errors';
+export { ApiError, NetworkError, RateLimitedError, TimeoutError, VitRinError, parseRetryAfter } from './core/transport/errors';
 export type { ApiErrorBody, ApiErrorEnvelope, ApiFieldError } from './core/transport/errors';
 
 export { AuthClient, AuthError } from './core/auth';

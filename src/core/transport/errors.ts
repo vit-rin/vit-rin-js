@@ -53,13 +53,19 @@ export class ApiError extends VitRinError {
   readonly code: string;
   readonly fields?: ApiFieldError[];
   readonly requestId?: string;
+  /**
+   * Seconds the server asked the caller to wait (`Retry-After`), when it did:
+   * on a `429`, and on a `409 idempotency.in_progress`.
+   */
+  readonly retryAfter?: number;
 
-  constructor(status: number, body: ApiErrorBody) {
+  constructor(status: number, body: ApiErrorBody, retryAfter?: number) {
     super(body.message);
     this.status = status;
     this.code = body.code;
     this.fields = body.fields;
     this.requestId = body.request_id;
+    this.retryAfter = retryAfter;
   }
 
   /**
@@ -67,15 +73,44 @@ export class ApiError extends VitRinError {
    * synthetic `http.<status>` code when the body isn't the expected
    * envelope shape (e.g. an upstream proxy's HTML error page).
    */
-  static fromResponseBody(status: number, body: unknown): ApiError {
-    if (isApiErrorEnvelope(body)) {
-      return new ApiError(status, body.error);
-    }
-    return new ApiError(status, {
-      code: `http.${status}`,
-      message: typeof body === 'string' && body.length > 0 ? body : `Request failed with status ${status}`,
-    });
+  static fromResponseBody(status: number, body: unknown, retryAfter?: number): ApiError {
+    const envelope: ApiErrorBody = isApiErrorEnvelope(body)
+      ? body.error
+      : {
+          code: `http.${status}`,
+          message: typeof body === 'string' && body.length > 0 ? body : `Request failed with status ${status}`,
+        };
+    // A 429 is its own type, so a caller can back off on `instanceof` instead
+    // of comparing status codes.
+    return status === 429 ? new RateLimitedError(envelope, retryAfter) : new ApiError(status, envelope, retryAfter);
   }
+}
+
+/**
+ * The server refused the request because the caller is over a rate limit
+ * (`429`, code `rate_limited`). `retryAfter` is how long to wait, in seconds,
+ * when the response said; wait at least that long before repeating the call.
+ */
+export class RateLimitedError extends ApiError {
+  constructor(body: ApiErrorBody, retryAfter?: number) {
+    super(429, body, retryAfter);
+  }
+}
+
+/**
+ * Reads a `Retry-After` header value: whole seconds, or an HTTP date. Returns
+ * seconds from `now`, or `undefined` when there is no usable value.
+ */
+export function parseRetryAfter(value: string | null | undefined, now: number = Date.now()): number | undefined {
+  if (value === null || value === undefined || value.trim() === '') return undefined;
+  const trimmed = value.trim();
+  if (/^\d+$/.test(trimmed)) return Number(trimmed);
+  // A signed number is not a delay and not a date; Date.parse would read
+  // '-5' as a year.
+  if (/^[-+]?\d+$/.test(trimmed)) return undefined;
+  const at = Date.parse(trimmed);
+  if (Number.isNaN(at)) return undefined;
+  return Math.max(0, Math.ceil((at - now) / 1000));
 }
 
 /** The request could not be sent or the response could not be read at all. */

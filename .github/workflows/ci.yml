@@ -31,3 +31,94 @@ jobs:
 
       - name: Unit tests
         run: npm test
+
+  # S1 against the real API (M1): refresh with a single retry, idempotent
+  # replay, and a typed 429, against vit-rin-backend with real Postgres and
+  # Redis. The API's development log sender stands in for SMS, and the test
+  # reads the one-time code from its log.
+  #
+  # Needs read access to vit-rin-backend: set the BACKEND_READ_TOKEN secret.
+  # E2E_BACKEND_REF (a repository variable) names the revision; default main.
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: vitrin
+          POSTGRES_PASSWORD: vitrin
+          POSTGRES_DB: vitrin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U vitrin -d vitrin"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the backend
+        uses: actions/checkout@v4
+        with:
+          repository: vit-rin/vit-rin-backend
+          ref: ${{ vars.E2E_BACKEND_REF || 'main' }}
+          token: ${{ secrets.BACKEND_READ_TOKEN || github.token }}
+          path: backend
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: Build the backend, migrate, and start the API
+        working-directory: backend
+        env:
+          DATABASE_URL: postgres://vitrin:vitrin@localhost:5432/vitrin?sslmode=disable
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin"
+          go build -o "$RUNNER_TEMP/bin/" ./cmd/api ./cmd/migrate
+          "$RUNNER_TEMP/bin/migrate" up
+          # Development environment: OTP codes go to the log, the signing key
+          # is generated per start. Everything in this run is one address, so
+          # the per-address limits are raised; the per-phone limit the 429
+          # test relies on is left at its default.
+          ENVIRONMENT=development LOG_FORMAT=text HTTP_ADDR=127.0.0.1:8190 \
+            REDIS_ADDR=localhost:6379 REDIS_DB=1 \
+            AUTH_BOOTSTRAP_SUPER_ADMIN_PHONE=+989120000001 \
+            RATE_LIMIT_OTP_START_IP=1000/1m RATE_LIMIT_OTP_VERIFY_IP=1000/1m \
+            RATE_LIMIT_TOKEN_IP=1000/1m RATE_LIMIT_TOKEN_CLIENT=1000/1m \
+            nohup "$RUNNER_TEMP/bin/api" > "$RUNNER_TEMP/api.log" 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf http://127.0.0.1:8190/readyz >/dev/null && exit 0
+            sleep 1
+          done
+          echo "the API did not become ready" >&2
+          cat "$RUNNER_TEMP/api.log" >&2
+          exit 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: S1 against the real API
+        run: npm run test:integration
+        env:
+          VITRIN_API_URL: http://127.0.0.1:8190
+          VITRIN_API_LOG: ${{ runner.temp }}/api.log
+          VITRIN_ADMIN_PHONE: "+989120000001"

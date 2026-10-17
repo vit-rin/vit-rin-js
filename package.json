@@ -49,6 +49,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
     "size": "size-limit",
     "check:types": "attw --pack .",
     "check:bundle": "source-map-explorer build/cjs/index.cjs --no-border-checks --html build/bundle-report.html"

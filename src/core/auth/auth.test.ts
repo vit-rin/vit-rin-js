@@ -221,3 +221,61 @@ describe('AuthClient — logout', () => {
     expect(auth.getAccessToken()).toBeUndefined();
   });
 });
+
+describe('AuthClient — the retry after a refresh is the same call', () => {
+  it('repeats the idempotency key, so the server can tell it is one call', async () => {
+    const seen: Array<string | undefined> = [];
+    const fetchMock = vi.fn().mockImplementation(async (url: string, init: RequestInit) => {
+      const headers = init.headers as Record<string, string>;
+      if (String(url).endsWith('/oauth/token')) {
+        return jsonResponse(200, TOKEN_PAIR('access-2', 'refresh-2'));
+      }
+      seen.push(headers[IDEMPOTENCY_KEY_HEADER]);
+      return headers.Authorization === 'Bearer access-2' ? jsonResponse(201, { ok: true }) : unauthorized();
+    });
+    const auth = new AuthClient({ baseUrl: 'https://api.example.test', fetch: fetchMock, clientId: 'pk_live_x' });
+    // Seed a token pair through the same path a real sign-in uses.
+    fetchMock.mockImplementationOnce(async () => jsonResponse(200, TOKEN_PAIR('access-1', 'refresh-1')));
+    await auth.verifyOtp('challenge', '123456');
+
+    await auth.authorizedRequest({ method: 'POST', path: '/api/v1/workspace/campaigns', body: { name: 'x' } });
+
+    expect(seen).toHaveLength(2);
+    expect(seen[0]).toBeTruthy();
+    expect(seen[1]).toBe(seen[0]);
+  });
+
+  it('a caller-supplied key is used for both attempts', async () => {
+    const seen: Array<string | undefined> = [];
+    const fetchMock = vi.fn().mockImplementation(async (url: string, init: RequestInit) => {
+      const headers = init.headers as Record<string, string>;
+      if (String(url).endsWith('/oauth/token')) return jsonResponse(200, TOKEN_PAIR('access-2', 'refresh-2'));
+      seen.push(headers[IDEMPOTENCY_KEY_HEADER]);
+      return headers.Authorization === 'Bearer access-2' ? jsonResponse(200, {}) : unauthorized();
+    });
+    const auth = new AuthClient({ baseUrl: 'https://api.example.test', fetch: fetchMock, clientId: 'pk_live_x' });
+    fetchMock.mockImplementationOnce(async () => jsonResponse(200, TOKEN_PAIR('access-1', 'refresh-1')));
+    await auth.verifyOtp('challenge', '123456');
+
+    await auth.authorizedRequest({ method: 'POST', path: '/x', idempotencyKey: 'mine' });
+
+    expect(seen).toEqual(['mine', 'mine']);
+  });
+
+  it('a read carries no key on either attempt', async () => {
+    const seen: Array<string | undefined> = [];
+    const fetchMock = vi.fn().mockImplementation(async (url: string, init: RequestInit) => {
+      const headers = init.headers as Record<string, string>;
+      if (String(url).endsWith('/oauth/token')) return jsonResponse(200, TOKEN_PAIR('access-2', 'refresh-2'));
+      seen.push(headers[IDEMPOTENCY_KEY_HEADER]);
+      return headers.Authorization === 'Bearer access-2' ? jsonResponse(200, {}) : unauthorized();
+    });
+    const auth = new AuthClient({ baseUrl: 'https://api.example.test', fetch: fetchMock, clientId: 'pk_live_x' });
+    fetchMock.mockImplementationOnce(async () => jsonResponse(200, TOKEN_PAIR('access-1', 'refresh-1')));
+    await auth.verifyOtp('challenge', '123456');
+
+    await auth.authorizedRequest({ path: '/x' });
+
+    expect(seen).toEqual([undefined, undefined]);
+  });
+});
