@@ -24,7 +24,7 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 |---|---|
 | Branch `dev` | S1 core built and unit-tested (transport, token auth with single-retry refresh, idempotency keys, Rollup ESM/CJS/IIFE, size budget); generated types, surfaces, UI overlay and release not built |
 | Surfaces | 0 of 8 |
-| **Next** | **M0 — open.** D-14: staging resolved (`vit-stage-all-eu-01`); production deferred to M6. Here: CI observed running `typecheck`, tests and the size budget. M1 — exercise S1 against the real API — is the work after M0 |
+| **Next** | **M1** — exercise S1 against the real API. M0 is proven on staging (`vit-stage-all-eu-01`; D-14: production deferred to M6) |
 
 ### What blocks this repo
 
@@ -55,8 +55,8 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 - [x] `core/transport` — fetch wrapper, timeouts, typed errors from the API's `error.code`
 - [x] `core/auth` — **token only**. No cookie read, no implicit redirect. Auto-refresh on 401 with a single retry
 - [x] `core/idempotency` — key on every mutating call
-- [~] CI size budget on the headless bundle — workflow and `size-limit` config are in place and pass locally (`npm run build && npm run size`); not yet observed running in GitHub Actions since this environment can't push or watch a run (M0)
-- [~] CI runs `typecheck` and the unit tests alongside the size budget — `ci.yml` runs `typecheck` and `npm test` on every push and pull request, and `size.yml` runs the build and the budget; all three pass from a clean checkout with `npm ci`, but none has been observed running in GitHub Actions (M0)
+- [x] CI size budget on the headless bundle — the `Bundle size budget` workflow ran green on the `dev` push for `70335e7`, and the same commands pass locally (`npm run build && npm run size`) (M0)
+- [x] CI runs `typecheck` and the unit tests alongside the size budget — `ci.yml` runs `typecheck` and `npm test` on every push and pull request, and `size.yml` runs the build and the budget; `CI` and `Bundle size budget` are both green on the `dev` push for `70335e7` (M0)
 - *Done when:* `source-map-explorer` shows **no React** in the headless ESM output, and `@arethetypeswrong/cli --pack .` is clean.
 
 ## S2 — Surfaces
