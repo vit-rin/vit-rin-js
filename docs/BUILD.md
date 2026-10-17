@@ -22,9 +22,9 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 
 | | |
 |---|---|
-| Branch `dev` | clean slate — no source carried over |
+| Branch `dev` | S1 core built and unit-tested (transport, token auth with single-retry refresh, idempotency keys, Rollup ESM/CJS/IIFE, size budget); generated types, surfaces, UI overlay and release not built |
 | Surfaces | 0 of 8 |
-| **Next** | **S1 — Core** |
+| **Next** | **M0 — open.** D-14: staging resolved (`vit-stage-all-eu-01`); production deferred to M6. Here: CI observed running `typecheck`, tests and the size budget. M1 — exercise S1 against the real API — is the work after M0 |
 
 ### What blocks this repo
 
@@ -35,6 +35,10 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 | Real token auth running | backend Phase 1 | verifying S1's `core/auth` end to end |
 
 ---
+
+## Tracker upkeep
+
+- [x] **Reconcile this tracker with [ROADMAP.md §3](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/ROADMAP.md#3-current-state-verified-against-code)** — the status table still reads "clean slate" though S1's core is built; every task tagged with its milestone (M0)
 
 ## S0 — Clean slate ✅
 
@@ -51,35 +55,36 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 - [x] `core/transport` — fetch wrapper, timeouts, typed errors from the API's `error.code`
 - [x] `core/auth` — **token only**. No cookie read, no implicit redirect. Auto-refresh on 401 with a single retry
 - [x] `core/idempotency` — key on every mutating call
-- [~] CI size budget on the headless bundle — workflow and `size-limit` config are in place and pass locally (`npm run build && npm run size`); not yet observed running in GitHub Actions since this environment can't push or watch a run
+- [~] CI size budget on the headless bundle — workflow and `size-limit` config are in place and pass locally (`npm run build && npm run size`); not yet observed running in GitHub Actions since this environment can't push or watch a run (M0)
+- [~] CI runs `typecheck` and the unit tests alongside the size budget — `ci.yml` runs `typecheck` and `npm test` on every push and pull request, and `size.yml` runs the build and the budget; all three pass from a clean checkout with `npm ci`, but none has been observed running in GitHub Actions (M0)
 - *Done when:* `source-map-explorer` shows **no React** in the headless ESM output, and `@arethetypeswrong/cli --pack .` is clean.
 
 ## S2 — Surfaces
 
 Blocked on `public.yaml`. Each is a thin typed wrapper over the generated client.
 
-- [ ] `types/` generated from `public.yaml` — never hand-edited
-- [ ] `campaigns` — read, enter
-- [ ] `games` — read, launch
-- [ ] `competitions` — open, finalize
-- [ ] `missions` — read, progress
-- [ ] `rewards` — read, earnings
-- [ ] `wallet` — balances, transactions, cards
-- [ ] `store` — catalog, order
-- [ ] `ads` — placements `before_game`, `after_game`, `before_result` **only**
+- [ ] `types/` generated from `public.yaml` — never hand-edited (M3)
+- [ ] `campaigns` — read, enter (M3)
+- [ ] `games` — read, launch (M3)
+- [ ] `competitions` — open, finalize (M3)
+- [ ] `missions` — read, progress (M3)
+- [ ] `rewards` — read, earnings (M3)
+- [ ] `wallet` — balances, transactions, cards (M3)
+- [ ] `store` — catalog, order (M3)
+- [ ] `ads` — placements `before_game`, `after_game`, `before_result` **only** (M3)
 - *Done when:* every surface is typed from the spec with no hand-written request or response shapes.
 
 ## S3 — UI overlay
 
-- [ ] `ui/` as a separate entry point
-- [ ] Theme tokens and `fa`/`en` with RTL
-- [ ] Controls, ad screen, result screen
+- [ ] `ui/` as a separate entry point (M3)
+- [ ] Theme tokens and `fa`/`en` with RTL (M3)
+- [ ] Controls, ad screen, result screen (M3)
 - *Done when:* a host that imports only `@vit-rin/js` ships no overlay code at all.
 
 ## S4 — Release
 
-- [ ] CI publishes to npm and the CDN on a tag
-- [ ] Write `README.md` usage docs; rewrite [SDK-CONTRACT.md](SDK-CONTRACT.md) from what was built and change its status from Specification to Binding
+- [ ] CI publishes to npm and the CDN on a tag (M3)
+- [ ] Write `README.md` usage docs; rewrite [SDK-CONTRACT.md](SDK-CONTRACT.md) from what was built and change its status from Specification to Binding (M3)
 - *Done when:* a sample game served from a **non-vit-rin origin**, holding only a token, completes authenticate → open competition → finalize → verdict.
 
 ---
