@@ -22,9 +22,9 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 
 | | |
 |---|---|
-| Branch `dev` | S1 core built and unit-tested (transport, token auth with single-retry refresh, idempotency keys, Rollup ESM/CJS/IIFE, size budget); generated types, surfaces, UI overlay and release not built |
+| Branch `dev` | S1 core built, unit-tested (52 tests) and exercised against the real API (5 integration tests, in CI) (transport, token auth with single-retry refresh, idempotency keys, Rollup ESM/CJS/IIFE, size budget); generated types, surfaces, UI overlay and release not built |
 | Surfaces | 0 of 8 |
-| **Next** | **M1** — exercise S1 against the real API, once the backend honours `Idempotency-Key` and rate-limits. M0 is proven on staging (`vit-stage-all-eu-01`; D-14: production deferred to M6) |
+| **Next** | **M2** has no SDK work. S1 is exercised against the real API (M1, proven on staging with the backend and frontend; `vit-stage-all-eu-01`, D-14: production deferred to M6). The SDK's next work is S2, which waits on `api/openapi/public.yaml` from the backend (M3) |
 
 ### What blocks this repo
 
