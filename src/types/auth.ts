@@ -38,7 +38,7 @@ export interface VerifyOtpRequest {
   code: string;
 }
 
-export type GrantType = 'refresh_token' | 'client_credentials';
+export type GrantType = 'refresh_token' | 'client_credentials' | 'switch_business';
 
 /** `POST /oauth/token` request body (`application/x-www-form-urlencoded`). */
 export interface RefreshTokenRequest {

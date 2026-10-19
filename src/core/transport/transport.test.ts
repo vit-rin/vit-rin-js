@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Transport } from './index';
-import { ApiError, NetworkError, TimeoutError } from './errors';
+import { ApiError, NetworkError, RateLimitedError, TimeoutError, parseRetryAfter } from './errors';
 import { IDEMPOTENCY_KEY_HEADER } from '../idempotency';
 
 function jsonResponse(status: number, body: unknown): Response {
@@ -142,5 +142,85 @@ describe('Transport', () => {
     const err = await transport.request({ path: '/slow' }).catch((e) => e);
 
     expect(err).toBeInstanceOf(TimeoutError);
+  });
+});
+
+describe('Transport — rate limiting', () => {
+  const rateLimited = (headers: Record<string, string>) =>
+    new Response(JSON.stringify({ error: { code: 'rate_limited', message: 'slow down', request_id: 'req-1' } }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json', ...headers },
+    });
+
+  it('a 429 is a RateLimitedError carrying how long to wait', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(rateLimited({ 'Retry-After': '42' }));
+    const transport = new Transport({ baseUrl: 'https://api.example.test', fetch: fetchMock });
+
+    const err = (await transport.request({ method: 'POST', path: '/thing' }).catch((e: unknown) => e)) as ApiError;
+
+    expect(err).toBeInstanceOf(RateLimitedError);
+    expect(err).toBeInstanceOf(ApiError);
+    expect(err.status).toBe(429);
+    expect(err.code).toBe('rate_limited');
+    expect(err.retryAfter).toBe(42);
+    expect(err.requestId).toBe('req-1');
+  });
+
+  it('a 429 without Retry-After is still a RateLimitedError, with no wait', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(rateLimited({}));
+    const transport = new Transport({ baseUrl: 'https://api.example.test', fetch: fetchMock });
+
+    const err = (await transport.request({ method: 'POST', path: '/thing' }).catch((e: unknown) => e)) as ApiError;
+
+    expect(err).toBeInstanceOf(RateLimitedError);
+    expect(err.retryAfter).toBeUndefined();
+  });
+
+  it('does not retry a 429 by itself: waiting is the caller\'s decision', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(rateLimited({ 'Retry-After': '1' }));
+    const transport = new Transport({ baseUrl: 'https://api.example.test', fetch: fetchMock });
+
+    await transport.request({ method: 'POST', path: '/thing' }).catch(() => undefined);
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('an in-progress idempotent request also says how long to wait', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ error: { code: 'idempotency.in_progress', message: 'busy' } }), {
+        status: 409,
+        headers: { 'Content-Type': 'application/json', 'Retry-After': '1' },
+      }),
+    );
+    const transport = new Transport({ baseUrl: 'https://api.example.test', fetch: fetchMock });
+
+    const err = (await transport.request({ method: 'POST', path: '/thing' }).catch((e: unknown) => e)) as ApiError;
+
+    expect(err).toBeInstanceOf(ApiError);
+    expect(err).not.toBeInstanceOf(RateLimitedError);
+    expect(err.code).toBe('idempotency.in_progress');
+    expect(err.retryAfter).toBe(1);
+  });
+});
+
+describe('parseRetryAfter', () => {
+  it('reads whole seconds', () => {
+    expect(parseRetryAfter('60')).toBe(60);
+    expect(parseRetryAfter(' 5 ')).toBe(5);
+    expect(parseRetryAfter('0')).toBe(0);
+  });
+
+  it('reads an HTTP date, as seconds from now, never negative', () => {
+    const now = Date.parse('2026-01-01T00:00:00Z');
+    expect(parseRetryAfter('Thu, 01 Jan 2026 00:01:30 GMT', now)).toBe(90);
+    expect(parseRetryAfter('Wed, 31 Dec 2025 23:00:00 GMT', now)).toBe(0);
+  });
+
+  it('is undefined when there is nothing usable', () => {
+    expect(parseRetryAfter(null)).toBeUndefined();
+    expect(parseRetryAfter(undefined)).toBeUndefined();
+    expect(parseRetryAfter('')).toBeUndefined();
+    expect(parseRetryAfter('soon')).toBeUndefined();
+    expect(parseRetryAfter('-5')).toBeUndefined();
   });
 });

@@ -1,8 +1,8 @@
 import { withIdempotencyKey } from '../idempotency';
-import { ApiError, NetworkError, TimeoutError } from './errors';
+import { ApiError, NetworkError, TimeoutError, parseRetryAfter } from './errors';
 
 export type { ApiErrorBody, ApiErrorEnvelope, ApiFieldError } from './errors';
-export { ApiError, NetworkError, TimeoutError, VitRinError } from './errors';
+export { ApiError, NetworkError, RateLimitedError, TimeoutError, VitRinError, parseRetryAfter } from './errors';
 
 /** A `fetch`-compatible function. Lets callers inject a mock in tests, or
  * a polyfill in a runtime that doesn't have a global `fetch`. */
@@ -139,7 +139,7 @@ export class Transport {
 
     if (!response.ok) {
       const body = await decodeBody(response);
-      throw ApiError.fromResponseBody(response.status, body);
+      throw ApiError.fromResponseBody(response.status, body, parseRetryAfter(response.headers.get('Retry-After')));
     }
 
     if (options.noContent || response.status === 204) {

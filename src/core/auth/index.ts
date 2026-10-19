@@ -1,6 +1,7 @@
 import { EventEmitter } from '../events';
 import { ApiError } from '../transport/errors';
 import { Transport, type FetchLike, type RequestOptions } from '../transport';
+import { generateIdempotencyKey, isMutatingMethod } from '../idempotency';
 import type { OtpChallenge, TokenPair } from '../../types/auth';
 import { AuthError } from './errors';
 
@@ -201,12 +202,21 @@ export class AuthClient extends EventEmitter<AuthEvent> {
    * and one retry per call.
    */
   async authorizedRequest<T>(options: RequestOptions): Promise<T> {
+    // One key for the call, not one per attempt. The transport mints a fresh
+    // key for every request it is not given one for, so without this the
+    // retry after a refresh would carry a different key from the attempt that
+    // may already have taken effect, and the server could not tell it is the
+    // same call.
+    const idempotencyKey =
+      options.idempotencyKey ??
+      (options.idempotent !== false && isMutatingMethod(options.method ?? 'GET') ? generateIdempotencyKey() : undefined);
+
     const attempt = (): Promise<T> => {
       const headers = { ...options.headers };
       if (this.accessToken) {
         headers.Authorization = `Bearer ${this.accessToken}`;
       }
-      return this.transport.request<T>({ ...options, headers });
+      return this.transport.request<T>({ ...options, headers, idempotencyKey });
     };
 
     try {
