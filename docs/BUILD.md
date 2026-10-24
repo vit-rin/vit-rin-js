@@ -24,7 +24,7 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 |---|---|
 | Branch `dev` | S1 core built, unit-tested (52 tests) and exercised against the real API (5 integration tests, in CI) (transport, token auth with single-retry refresh, idempotency keys, Rollup ESM/CJS/IIFE, size budget); generated types, surfaces, UI overlay and release not built |
 | Surfaces | 0 of 8 |
-| **Next** | **M2** has no SDK work. S1 is exercised against the real API (M1, proven on staging with the backend and frontend; `vit-stage-all-eu-01`, D-14: production deferred to M6). The SDK's next work is S2, which waits on `api/openapi/public.yaml` from the backend (M3) |
+| **Next** | **M2** has no SDK work: its wallet reads are in the backend's `consumer.yaml`, which the SDK does not wrap, and the SDK's wallet surface is M4 ([ROADMAP.md §8](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/ROADMAP.md#8-dependencies-across-repositories)). S1 is exercised against the real API (M1, proven on staging with the backend and frontend; `vit-stage-all-eu-01`, D-14: production deferred to M6). The SDK's next work is S2, which waits on `api/openapi/public.yaml` from the backend (M3). The S2 and S3 lines carry the milestone ROADMAP §8 gives each surface |
 
 ### What blocks this repo
 
@@ -65,21 +65,22 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 Blocked on `public.yaml`. Each is a thin typed wrapper over the generated client.
 
 - [ ] `types/` generated from `public.yaml` — never hand-edited (M3)
-- [ ] `campaigns` — read, enter (M3)
+- [ ] `campaigns` — read, enter (M4)
 - [ ] `games` — read, launch (M3)
 - [ ] `competitions` — open, finalize (M3)
-- [ ] `missions` — read, progress (M3)
-- [ ] `rewards` — read, earnings (M3)
-- [ ] `wallet` — balances, transactions, cards (M3)
-- [ ] `store` — catalog, order (M3)
-- [ ] `ads` — placements `before_game`, `after_game`, `before_result` **only** (M3)
+- [ ] `missions` — read, progress (M7)
+- [ ] `rewards` — read, earnings (M4)
+- [ ] `wallet` — balances, transactions, cards (M4)
+- [ ] `store` — catalog, order (M9)
+- [ ] `ads` — placements `before_game`, `after_game`, `before_result` **only** (M10)
 - *Done when:* every surface is typed from the spec with no hand-written request or response shapes.
 
 ## S3 — UI overlay
 
 - [ ] `ui/` as a separate entry point (M3)
 - [ ] Theme tokens and `fa`/`en` with RTL (M3)
-- [ ] Controls, ad screen, result screen (M3)
+- [ ] Controls, result screen (M3)
+- [ ] Ad screen (M10)
 - *Done when:* a host that imports only `@vit-rin/js` ships no overlay code at all.
 
 ## S4 — Release
