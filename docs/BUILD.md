@@ -24,14 +24,16 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 |---|---|
 | Branch `dev` | S1 core built, unit-tested (52 tests) and exercised against the real API (5 integration tests, in CI) (transport, token auth with single-retry refresh, idempotency keys, Rollup ESM/CJS/IIFE, size budget); generated types, surfaces, UI overlay and release not built |
 | Surfaces | 0 of 8 |
-| **Next** | **M2** has no SDK work: its wallet reads are in the backend's `consumer.yaml`, which the SDK does not wrap, and the SDK's wallet surface is M4 ([ROADMAP.md §8](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/ROADMAP.md#8-dependencies-across-repositories)). S1 is exercised against the real API (M1, proven on staging with the backend and frontend; `vit-stage-all-eu-01`, D-14: production deferred to M6). The SDK's next work is S2, which waits on `api/openapi/public.yaml` from the backend (M3). The S2 and S3 lines carry the milestone ROADMAP §8 gives each surface |
+| **Next** | **M3** ([ROADMAP.md §6](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/ROADMAP.md#m3--play-game-competition-sdk-first-curated-game)). Every decision is resolved. Two tasks need nothing from the backend's spec slice and can start now: the token provider with its `refresh` callback ([adr/0018](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/adr/0018-game-embedding-and-token-handoff.md)), and the cross-site check (ROADMAP D-24). Generated types and the `games` and `competitions` surfaces wait on `public.yaml`, served at `/openapi/public.json`. The release goes to the CDN only; npm is deferred (D-25). The first game to use the SDK is `memory-match`, on `games.stage.vit-rin.com`. M0–M2 are proven on staging (`vit-stage-all-eu-01`) |
 
 ### What blocks this repo
 
 | Need | From | Blocks |
 |---|---|---|
 | `api/openapi/auth.yaml` | backend — **spec ready now**, [adr/0007](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/adr/0007-token-model.md) | `core/auth`'s shape now; exercising it live once Phase 1 ships |
-| `api/openapi/public.yaml` | backend Phase 3 | S2 onward |
+| `api/openapi/public.yaml`, served at `/openapi/public.json` | backend M3 spec slice | generated types, `games`, `competitions` |
+| Per-request CORS for public clients and Game origins ([adr/0016](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/adr/0016-public-surface-cross-origin.md)) | backend M3 | the cross-site check against a deployed API |
+| The CDN path `/sdk/<version>/` | deploy M3 | S4's release reaching hosts |
 | Real token auth running | backend Phase 1 | verifying S1's `core/auth` end to end |
 
 ---
@@ -62,12 +64,15 @@ Reference, not progress: [SDK-CONTRACT.md](SDK-CONTRACT.md) (the rules) ·
 
 ## S2 — Surfaces
 
-Blocked on `public.yaml`. Each is a thin typed wrapper over the generated client.
+Each is a thin typed wrapper over the generated client. The M3 lines wait on
+the backend's `public.yaml`, except the token provider and the cross-site check.
 
-- [ ] `types/` generated from `public.yaml` — never hand-edited (M3)
+- [ ] `types/` generated from `public.yaml`, never hand-edited — generated from the spec the API serves at `/openapi/public.json`; CI fails on drift. *Done when:* no hand-written request or response shape remains, `src/types/auth.ts` included (M3)
+- [ ] **Token provider and `refresh` callback** ([adr/0018](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/adr/0018-game-embedding-and-token-handoff.md), [adr/0011](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/adr/0011-consumer-sign-in.md)) — the client takes a token and a `refresh` callback and holds no refresh token. A host helper builds both from the frame handshake (`vitrin:ready`, `vitrin:token`, `vitrin:refresh`, `vitrin:finished`), and accepts `vitrin:token` only from the allowed parent origins in the Game's deployed configuration, never from the URL. *Done when:* a token sent from an allowed parent origin is accepted and one from any other origin is ignored; a forced `401` calls `refresh` once and retries once with the same idempotency key; a failed refresh surfaces and does not loop; the public-client OTP path still passes its integration tests (the Business-site regression, ROADMAP D-19) (M3)
 - [ ] `campaigns` — read, enter (M4)
 - [ ] `games` — read, launch (M3)
-- [ ] `competitions` — open, finalize (M3)
+- [ ] `competitions` — open, finalize — open a play session for a Competition, and finalize it with the score and an idempotency key; the result is the outcome and the raw score ([adr/0020](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/adr/0020-competition-and-play-session.md)). *Done when:* against the real API, a repeated finalize returns the original outcome and an out-of-bounds score surfaces as a typed error with its code (M3)
+- [ ] **Cross-site check** (ROADMAP D-24) — the games host shares a site with the app and the API, so it cannot show that the SDK works on any origin. The `integration` job serves a page from `localhost`, which is cross-site to the API, and drives the real API through the SDK from it. *Done when:* the calls succeed through CORS, and the job asserts that no request carries credentials (no cookie, `credentials: "omit"`) (M3)
 - [ ] `missions` — read, progress (M7)
 - [ ] `rewards` — read, earnings (M4)
 - [ ] `wallet` — balances, transactions, cards (M4)
@@ -85,9 +90,10 @@ Blocked on `public.yaml`. Each is a thin typed wrapper over the generated client
 
 ## S4 — Release
 
-- [ ] CI publishes to npm and the CDN on a tag (M3)
-- [ ] Write `README.md` usage docs; rewrite [SDK-CONTRACT.md](SDK-CONTRACT.md) from what was built and change its status from Specification to Binding (M3)
-- *Done when:* a sample game served from a **non-vit-rin origin**, holding only a token, completes authenticate → open competition → finalize → verdict.
+- [ ] CI publishes to the CDN on a tag — the build is a versioned, immutable release artifact that deploy places at `/sdk/<version>/…` on the CDN host, and hosts pin the version (M3)
+- npm publishing — **deferred** ([ROADMAP.md D-25](https://github.com/vit-rin/vit-rin-backend/blob/main/docs/ROADMAP.md#10-open-decisions)): no npm publish and no dist-tag in M3; revisited once M3 is wired and tested end to end. It has no milestone until then, so it is not a task line
+- [ ] Write `README.md` usage docs; rewrite [SDK-CONTRACT.md](SDK-CONTRACT.md) from what was built and change its status from Specification to Binding. The contract's verification line names the games host and the cross-site check instead of "a non-vit-rin origin" (ROADMAP D-24) (M3)
+- *Done when:* `memory-match`, served from **`games.stage.vit-rin.com`** with an SDK version pinned from the CDN, holding only a token, completes authenticate → open competition → finalize → verdict; and the cross-site check (S2) is green.
 
 ---
 
