@@ -279,3 +279,75 @@ describe('AuthClient — the retry after a refresh is the same call', () => {
     expect(seen).toEqual([undefined, undefined]);
   });
 });
+
+describe('AuthClient — a host-supplied token and a refresh callback (adr/0018)', () => {
+  const fresh = { accessToken: 'host-token-2', expiresAt: 1_900_000_000_000 };
+
+  it('answers a 401 by calling the callback once, retrying once with the new token and the same key', async () => {
+    const seen: Array<{ auth: string; key: string }> = [];
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(async (_u: string, init: RequestInit) => {
+        seen.push({ auth: (init.headers as Record<string, string>).Authorization!, key: (init.headers as Record<string, string>)[IDEMPOTENCY_KEY_HEADER]! });
+        return unauthorized();
+      })
+      .mockImplementationOnce(async (_u: string, init: RequestInit) => {
+        seen.push({ auth: (init.headers as Record<string, string>).Authorization!, key: (init.headers as Record<string, string>)[IDEMPOTENCY_KEY_HEADER]! });
+        return jsonResponse(200, { ok: true });
+      });
+    const refresh = vi.fn().mockResolvedValue(fresh);
+    const auth = new AuthClient({ baseUrl: 'https://api.example.test', fetch: fetchMock, accessToken: 'host-token-1', refresh });
+
+    await expect(auth.authorizedRequest({ method: 'POST', path: '/x' })).resolves.toEqual({ ok: true });
+
+    expect(refresh).toHaveBeenCalledTimes(1);
+    expect(auth.getAccessToken()).toBe('host-token-2');
+    expect(seen.map((s) => s.auth)).toEqual(['Bearer host-token-1', 'Bearer host-token-2']);
+    expect(seen[0]!.key).toBe(seen[1]!.key);
+  });
+
+  it('surfaces the callback\'s error and retries nothing', async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => unauthorized());
+    const boom = new Error('page did not answer');
+    const refresh = vi.fn().mockRejectedValue(boom);
+    const auth = new AuthClient({ baseUrl: 'https://api.example.test', fetch: fetchMock, accessToken: 'host-token-1', refresh });
+    const events: string[] = [];
+    auth.on((e) => events.push(e.type));
+
+    await expect(auth.authorizedRequest({ method: 'POST', path: '/x' })).rejects.toBe(boom);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(refresh).toHaveBeenCalledTimes(1);
+    expect(events).toContain('refresh_failed');
+  });
+
+  it('does not loop when the retry is a 401 too', async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => unauthorized());
+    const refresh = vi.fn().mockResolvedValue(fresh);
+    const auth = new AuthClient({ baseUrl: 'https://api.example.test', fetch: fetchMock, accessToken: 'host-token-1', refresh });
+
+    await expect(auth.authorizedRequest({ method: 'POST', path: '/x' })).rejects.toMatchObject({ status: 401 });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(refresh).toHaveBeenCalledTimes(1);
+  });
+
+  it('shares one callback call between concurrent 401s', async () => {
+    let calls = 0;
+    const fetchMock = vi.fn().mockImplementation(async (_u: string, init: RequestInit) =>
+      (init.headers as Record<string, string>).Authorization === 'Bearer host-token-2' ? jsonResponse(200, {}) : (calls++, unauthorized()),
+    );
+    const refresh = vi.fn().mockImplementation(() => new Promise((r) => setTimeout(() => r(fresh), 5)));
+    const auth = new AuthClient({ baseUrl: 'https://api.example.test', fetch: fetchMock, accessToken: 'host-token-1', refresh });
+
+    await Promise.all([auth.authorizedRequest({ method: 'POST', path: '/a' }), auth.authorizedRequest({ method: 'POST', path: '/b' })]);
+    expect(calls).toBe(2);
+    expect(refresh).toHaveBeenCalledTimes(1);
+  });
+
+  it('with neither a refresh token nor a callback, a 401 still propagates untouched', async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => unauthorized());
+    const auth = new AuthClient({ baseUrl: 'https://api.example.test', fetch: fetchMock, accessToken: 'host-token-1' });
+    expect(auth.canRefresh()).toBe(false);
+    await expect(auth.authorizedRequest({ method: 'POST', path: '/x' })).rejects.toBeInstanceOf(ApiError);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+});

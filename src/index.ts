@@ -17,7 +17,12 @@ export { ApiError, NetworkError, RateLimitedError, TimeoutError, VitRinError, pa
 export type { ApiErrorBody, ApiErrorEnvelope, ApiFieldError } from './core/transport/errors';
 
 export { AuthClient, AuthError } from './core/auth';
-export type { AuthConfig, AuthEvent, StoredTokens } from './core/auth';
+export type { AuthConfig, AuthEvent, RefreshedToken, StoredTokens } from './core/auth';
+
+export { CompetitionsClient, OpenSession } from './surfaces/competitions';
+export type { FinalizeOptions } from './surfaces/competitions';
+export { connectToHost, HostError, HOST_MESSAGE } from './host';
+export type { ConnectOptions, HostConnection, HostWindow } from './host';
 
 export {
   generateIdempotencyKey,
@@ -28,6 +33,9 @@ export {
 
 export { EventEmitter } from './core/events';
 export type { Listener, Unsubscribe } from './core/events';
+
+// Temporary hand-written types for the public surface — see src/types/public.ts.
+export type { PlaySession, FinalizeRequest, SessionResult, SessionOutcome } from './types/public';
 
 // Temporary hand-written auth types — see src/types/auth.ts for why, and
 // docs/BUILD.md S2 for when this stops being true.

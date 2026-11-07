@@ -20,6 +20,15 @@ export type AuthEvent =
   | { type: 'tokens_cleared' }
   | { type: 'refresh_failed'; error: unknown };
 
+/**
+ * What a host's `refresh` callback hands back: the new access token and, when
+ * the host knows it, when it expires (epoch milliseconds).
+ */
+export interface RefreshedToken {
+  accessToken: string;
+  expiresAt?: number;
+}
+
 export interface AuthConfig {
   /** Same API base URL used for every other call. */
   baseUrl: string;
@@ -35,6 +44,14 @@ export interface AuthConfig {
   timeoutMs?: number;
   /** A token the host already obtained by some other means. */
   accessToken?: string;
+  /**
+   * How to get a fresh access token when the host supplied a bare one and the
+   * SDK holds no refresh token (adr/0018: a Game in a frame never holds one).
+   * Called at most once per request that meets a `401`; if it throws, the
+   * error surfaces and nothing is retried. A refresh token, when the SDK has
+   * one from the OTP flow, is used instead.
+   */
+  refresh?: () => Promise<RefreshedToken>;
 }
 
 /**
@@ -50,6 +67,7 @@ export interface AuthConfig {
 export class AuthClient extends EventEmitter<AuthEvent> {
   private readonly transport: Transport;
   private readonly clientId?: string;
+  private readonly refreshCallback?: () => Promise<RefreshedToken>;
 
   private accessToken?: string;
   private refreshToken?: string;
@@ -63,6 +81,7 @@ export class AuthClient extends EventEmitter<AuthEvent> {
     super();
     this.transport = config.transport ?? new Transport({ baseUrl: config.baseUrl, fetch: config.fetch, timeoutMs: config.timeoutMs });
     this.clientId = config.clientId;
+    this.refreshCallback = config.refresh;
     if (config.accessToken) {
       this.setAccessToken(config.accessToken);
     }
@@ -139,22 +158,38 @@ export class AuthClient extends EventEmitter<AuthEvent> {
 
   // --- refresh -------------------------------------------------------------
 
+  /** True when a `401` can be answered with a fresh token. */
+  canRefresh(): boolean {
+    return this.refreshToken !== undefined || this.refreshCallback !== undefined;
+  }
+
   /**
-   * `POST /oauth/token` with `grant_type=refresh_token`. Consumes the
-   * current refresh token (single-use rotation per ADR 0007) and stores
-   * the new pair. Concurrent calls share one in-flight request instead of
-   * each spending a token.
+   * Gets a fresh access token. With a refresh token (the OTP flow) it is
+   * `POST /oauth/token` with `grant_type=refresh_token`, which consumes the
+   * current refresh token (single-use rotation per ADR 0007) and stores the
+   * new pair. Without one, it is the host's `refresh` callback. Concurrent
+   * calls share one in-flight attempt instead of each spending a token.
    */
   async refresh(): Promise<void> {
-    if (!this.refreshToken) {
-      throw new AuthError('auth.no_refresh_token', 'No refresh token is available to refresh with.');
+    if (!this.refreshToken && !this.refreshCallback) {
+      throw new AuthError('auth.no_refresh_token', 'No refresh token or refresh callback is available to refresh with.');
     }
     if (!this.refreshing) {
-      this.refreshing = this.doRefresh().finally(() => {
+      this.refreshing = (this.refreshToken ? this.doRefresh() : this.doCallbackRefresh()).finally(() => {
         this.refreshing = undefined;
       });
     }
     return this.refreshing;
+  }
+
+  private async doCallbackRefresh(): Promise<void> {
+    try {
+      const fresh = await this.refreshCallback!();
+      this.setAccessToken(fresh.accessToken, fresh.expiresAt);
+    } catch (err) {
+      this.emit({ type: 'refresh_failed', error: err });
+      throw err;
+    }
   }
 
   private async doRefresh(): Promise<void> {
@@ -222,7 +257,7 @@ export class AuthClient extends EventEmitter<AuthEvent> {
     try {
       return await attempt();
     } catch (err) {
-      if (err instanceof ApiError && err.status === 401 && this.refreshToken) {
+      if (err instanceof ApiError && err.status === 401 && this.canRefresh()) {
         await this.refresh();
         return await attempt();
       }
