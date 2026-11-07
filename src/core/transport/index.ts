@@ -122,7 +122,11 @@ export class Transport {
 
     let response: Response;
     try {
-      response = await this.fetchImpl(url, {
+      // Called detached, never as `this.fetchImpl(...)`: a browser's native
+      // `fetch` throws "Illegal invocation" when its `this` is anything but the
+      // window, and `this` here would be the Transport.
+      const fetchImpl = this.fetchImpl;
+      response = await fetchImpl(url, {
         method,
         headers,
         body: payload,

@@ -16,6 +16,21 @@ describe('Transport', () => {
     vi.useRealTimers();
   });
 
+  it('calls fetch detached, not as a method of the transport (a browser throws "Illegal invocation" otherwise)', async () => {
+    let receiver: unknown = 'not called';
+    // Like a browser's native fetch: fails unless `this` is undefined or the global object.
+    const nativeLike = function (this: unknown): Promise<Response> {
+      receiver = this;
+      return Promise.resolve(jsonResponse(200, {}));
+    } as unknown as typeof fetch;
+    const transport = new Transport({ baseUrl: 'https://api.example.test', fetch: nativeLike });
+
+    await transport.request({ path: '/thing' });
+
+    expect(receiver).not.toBe(transport);
+    expect(receiver === undefined || receiver === globalThis).toBe(true);
+  });
+
   it('resolves with the decoded JSON body on a 2xx response', async () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse(200, { hello: 'world' }));
     const transport = new Transport({ baseUrl: 'https://api.example.test', fetch: fetchMock });
