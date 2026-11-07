@@ -1,6 +1,6 @@
 {
   "name": "@vit-rin/js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "TypeScript SDK for integrating games with VIT-RIN.",
   "license": "UNLICENSED",
   "type": "module",
@@ -90,7 +90,10 @@
   "size-limit": [
     {
       "name": "headless core (all ESM modules)",
-      "path": ["build/esm/index.js", "build/esm/core/**/*.js"],
+      "path": [
+        "build/esm/index.js",
+        "build/esm/core/**/*.js"
+      ],
       "limit": "10 KB"
     },
     {
