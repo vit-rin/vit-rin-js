@@ -1,9 +1,9 @@
 # vit-rin-js — SDK Contract
 
-**Status:** Specification — implementation has not started.
-
-> Rewrite this document from reality once the headless core works, and change
-> the status to Binding.
+**Status:** Specification — the headless core, the token provider, the `competitions`
+surface and the CDN release are built and match it (`v0.2.0`, on staging). It becomes
+Binding when the cross-site check its Verification section names exists and it is
+rewritten from what was built (backend M5-PLAN task C.3, decision D-53).
 
 ## Rules
 
