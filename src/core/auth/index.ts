@@ -15,8 +15,15 @@ export interface StoredTokens {
   expiresAt?: number;
 }
 
+/**
+ * What a `tokens_set` listener is told: the access token and when it expires. Not the refresh token:
+ * a listener is any code on the page, and the refresh token is the credential that outlives the session
+ * (M5 review, SK-3). A host that wants to keep it has it from `verifyOtp`, which returns the pair.
+ */
+export type TokenEventPayload = Omit<StoredTokens, 'refreshToken'>;
+
 export type AuthEvent =
-  | { type: 'tokens_set'; tokens: StoredTokens }
+  | { type: 'tokens_set'; tokens: TokenEventPayload }
   | { type: 'tokens_cleared' }
   | { type: 'refresh_failed'; error: unknown };
 
@@ -116,8 +123,8 @@ export class AuthClient extends EventEmitter<AuthEvent> {
     this.emit({ type: 'tokens_cleared' });
   }
 
-  private snapshot(): StoredTokens {
-    return { accessToken: this.accessToken!, refreshToken: this.refreshToken, expiresAt: this.expiresAt };
+  private snapshot(): TokenEventPayload {
+    return { accessToken: this.accessToken!, expiresAt: this.expiresAt };
   }
 
   private storeTokenPair(pair: TokenPair): void {
