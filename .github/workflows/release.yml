@@ -6,7 +6,8 @@ name: Release
 # and a Game loads `<cdn>/sdk/X.Y.Z/vit-rin.min.js`, pinned. A version is immutable:
 # never re-tag, cut the next one. npm publishing is deferred (ROADMAP D-25).
 #
-# The artifact is the contents of build/iife for the CDN: vit-rin.min.js and its map.
+# The artifact is the contents of build/iife for the CDN: vit-rin.min.js, its map and its Subresource Integrity
+# value (vit-rin.min.js.integrity), which a Game pins with <script integrity="…" crossorigin="anonymous">.
 
 on:
   push:
@@ -32,9 +33,17 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run size
+      # The Subresource Integrity value of the file a Game loads. It is written beside the file, so the artifact
+      # carries it and the CDN serves it at <cdn>/sdk/X.Y.Z/vit-rin.min.js.integrity; it is published with the
+      # release and in its notes; and it is checked here against openssl, which does not share its code.
+      - name: Subresource Integrity
+        run: |
+          node scripts/integrity.mjs build/iife/vit-rin.min.js
+          want="sha384-$(openssl dgst -sha384 -binary build/iife/vit-rin.min.js | openssl base64 -A)"
+          test "$(cat build/iife/vit-rin.min.js.integrity)" = "$want"
       - name: Package the browser build
         run: |
-          tar -czf "vit-rin-js-${GITHUB_REF_NAME}.tar.gz" -C build/iife vit-rin.min.js vit-rin.min.js.map
+          tar -czf "vit-rin-js-${GITHUB_REF_NAME}.tar.gz" -C build/iife vit-rin.min.js vit-rin.min.js.map vit-rin.min.js.integrity
           sha256sum "vit-rin-js-${GITHUB_REF_NAME}.tar.gz" | cut -d' ' -f1 > "vit-rin-js-${GITHUB_REF_NAME}.tar.gz.sha256"
       - name: Publish the release
         env:
@@ -43,4 +52,6 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" \
             "vit-rin-js-${GITHUB_REF_NAME}.tar.gz" \
             "vit-rin-js-${GITHUB_REF_NAME}.tar.gz.sha256" \
-            --title "${GITHUB_REF_NAME}" --generate-notes
+            build/iife/vit-rin.min.js.integrity \
+            --title "${GITHUB_REF_NAME}" --generate-notes \
+            --notes "Subresource Integrity of vit-rin.min.js: \`$(cat build/iife/vit-rin.min.js.integrity)\`"
