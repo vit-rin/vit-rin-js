@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>A Game on another site</title>
+<p>
+  A page on its own origin, loading the SDK's CDN build and nothing of
+  VIT-RIN's.
+</p>
+<script>
+  // Every fetch the page makes is recorded with the credentials mode it was asked for, before the SDK loads,
+  // so the SDK's own calls are what is counted.
+  window.__fetches = [];
+  const real = window.fetch.bind(window);
+  window.fetch = (input, init) => {
+    window.__fetches.push({
+      url: String(input),
+      credentials: init && init.credentials,
+      method: (init && init.method) || "GET",
+    });
+    return real(input, init);
+  };
+</script>
+<script src="/vit-rin.min.js"></script>

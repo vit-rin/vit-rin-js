@@ -54,7 +54,8 @@
     "check:types": "attw --pack .",
     "check:bundle": "source-map-explorer build/cjs/index.cjs --no-border-checks --html build/bundle-report.html",
     "types:generate": "node scripts/generate-types.mjs",
-    "types:check": "node scripts/generate-types.mjs --check"
+    "types:check": "node scripts/generate-types.mjs --check",
+    "test:cross-site": "playwright test --config playwright.cross-site.config.ts"
   },
   "peerDependencies": {
     "react": ">=18",
