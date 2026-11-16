@@ -8,7 +8,7 @@
  */
 import type { AuthClient } from '../../core/auth';
 import { generateIdempotencyKey } from '../../core/idempotency';
-import type { FinalizeRequest, PlaySession, SessionResult } from '../../types/public';
+import type { FinalizeRequest, PlaySession, SessionResult } from '../../types';
 
 const PUBLIC = '/api/v1/public';
 

@@ -34,16 +34,18 @@ export {
 export { EventEmitter } from './core/events';
 export type { Listener, Unsubscribe } from './core/events';
 
-// Temporary hand-written types for the public surface — see src/types/public.ts.
-export type { PlaySession, FinalizeRequest, SessionResult, SessionOutcome } from './types/public';
-
-// Temporary hand-written auth types — see src/types/auth.ts for why, and
-// docs/BUILD.md S2 for when this stops being true.
+// The API's types, generated from the specifications it serves (src/types/generated, scripts/generate-types.mjs).
 export type {
+  PlaySession,
+  FinalizeRequest,
+  SessionResult,
+  SessionOutcome,
+  Leaderboard,
+  LeaderboardRow,
   StartOtpRequest,
   OtpChallenge,
   VerifyOtpRequest,
   TokenPair,
   GrantType,
   RefreshTokenRequest,
-} from './types/auth';
+} from './types';
