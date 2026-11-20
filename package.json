@@ -48,6 +48,8 @@
     "build": "rimraf build && rollup -c && node scripts/mirror-cjs-types.mjs",
     "typecheck": "tsc --noEmit",
     "check:pins": "bash scripts/check-pins.sh",
+    "audit:deps": "npm audit --audit-level=high",
+    "verify:supply-chain": "bash scripts/verify-supply-chain.sh",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:integration": "vitest run --config vitest.integration.config.ts",

@@ -36,6 +36,37 @@ jobs:
       - name: Unit tests
         run: npm test
 
+  # Known vulnerabilities in the dependency tree, from the lockfile (M5 task C.4): any advisory of high or
+  # critical severity, in a production or a development dependency, fails (the owner's threshold; moderate
+  # and low are listed and do not fail). `npm run audit:deps` is `npm audit --audit-level=high`. This SDK has
+  # no container image, so there is no image scan here.
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
+      - run: npm run audit:deps
+
+  # Proves the checks of this file are wired: plants an action pinned by tag, an image without a digest and a
+  # dependency with known high-severity advisories, and requires each check to FAIL on its plant and PASS
+  # without it (scripts/verify-supply-chain.sh). This job is green when the checks are red on the plants.
+  supply-chain-selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
+      - run: npm run verify:supply-chain
+
   # S1 against the real API (M1): refresh with a single retry, idempotent
   # replay, and a typed 429, against vit-rin-backend with real Postgres and
   # Redis. The API's development log sender stands in for SMS, and the test
