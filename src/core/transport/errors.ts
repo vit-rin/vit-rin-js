@@ -7,7 +7,7 @@
  * (e.g. `campaign.not_found`, `auth.refresh_reused`) — see
  * vit-rin-backend/api/openapi/shared/components.yaml. This shape is not
  * specific to any one surface, so it lives in `core/transport` rather than
- * in the temporary hand-written `types/auth.ts`.
+ * in the generated types of one of them.
  */
 export interface ApiFieldError {
   field: string;

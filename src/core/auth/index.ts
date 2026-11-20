@@ -2,7 +2,7 @@ import { EventEmitter } from '../events';
 import { ApiError } from '../transport/errors';
 import { Transport, type FetchLike, type RequestOptions } from '../transport';
 import { generateIdempotencyKey, isMutatingMethod } from '../idempotency';
-import type { OtpChallenge, TokenPair } from '../../types/auth';
+import type { OtpChallenge, TokenPair } from '../../types';
 import { AuthError } from './errors';
 
 export { AuthError } from './errors';

@@ -52,7 +52,10 @@
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "size": "size-limit",
     "check:types": "attw --pack .",
-    "check:bundle": "source-map-explorer build/cjs/index.cjs --no-border-checks --html build/bundle-report.html"
+    "check:bundle": "source-map-explorer build/cjs/index.cjs --no-border-checks --html build/bundle-report.html",
+    "types:generate": "node scripts/generate-types.mjs",
+    "types:check": "node scripts/generate-types.mjs --check",
+    "test:cross-site": "playwright test --config playwright.cross-site.config.ts"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -68,6 +71,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
+    "@playwright/test": "^1.65.1",
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-terser": "^0.4.4",
@@ -76,6 +80,7 @@
     "@types/node": "^22.9.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "openapi-typescript": "^7.13.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rimraf": "^6.0.1",

@@ -174,7 +174,7 @@ live('S1 against the real API', () => {
     const transport = new Transport({ baseUrl: API_URL! });
     const phone = freshPhone();
 
-    // The API's default is 5 sends per phone per 15 minutes.
+    // The API's default is 5 sends per phone per 15 minutes (CI sets 7, so the cross-site check can sign the operator in too); 8 sends reach either.
     let limited: unknown;
     for (let i = 0; i < 8 && !limited; i++) {
       limited = await transport

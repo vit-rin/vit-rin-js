@@ -93,13 +93,15 @@ jobs:
           "$RUNNER_TEMP/bin/migrate" up
           # Development environment: OTP codes go to the log, the signing key
           # is generated per start. Everything in this run is one address, so
-          # the per-address limits are raised; the per-phone limit the 429
-          # test relies on is left at its default.
+          # the per-address limits are raised; the per-phone limit is 7 (the 429 test
+          # sends 8, and the operator signs in five times for S1 and once more for the
+          # cross-site check) .
           ENVIRONMENT=development LOG_FORMAT=text HTTP_ADDR=127.0.0.1:8190 \
             REDIS_ADDR=localhost:6379 REDIS_DB=1 \
             AUTH_BOOTSTRAP_SUPER_ADMIN_PHONE=+989120000001 \
             RATE_LIMIT_OTP_START_IP=1000/1m RATE_LIMIT_OTP_VERIFY_IP=1000/1m \
             RATE_LIMIT_TOKEN_IP=1000/1m RATE_LIMIT_TOKEN_CLIENT=1000/1m \
+            HTTP_ORIGIN_REFRESH=1s RATE_LIMIT_OTP_START_PHONE=7/15m \
             nohup "$RUNNER_TEMP/bin/api" > "$RUNNER_TEMP/api.log" 2>&1 &
           for i in $(seq 1 60); do
             curl -sf http://127.0.0.1:8190/readyz >/dev/null && exit 0
@@ -118,6 +120,30 @@ jobs:
 
       - name: S1 against the real API
         run: npm run test:integration
+        env:
+          VITRIN_API_URL: http://127.0.0.1:8190
+          VITRIN_API_LOG: ${{ runner.temp }}/api.log
+          VITRIN_ADMIN_PHONE: "+989120000001"
+
+      # The types are the API's: regenerate them from the specifications this API serves and fail on any
+      # difference (docs/SDK-CONTRACT.md; backend M5 task C.3).
+      - name: Generated types are what the API serves
+        run: npm run types:check
+        env:
+          VITRIN_API_URL: http://127.0.0.1:8190
+
+      # The cross-site check: a page on another site loads the CDN build and signs in, reads, refreshes and
+      # signs out against this API, and no request reaches it with a credential (e2e/cross-site). It needs a
+      # backend that answers CORS for logout (backend M5 task C.3): set E2E_BACKEND_REF to a revision that has it
+      # until that is on main.
+      - name: Install the browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Build the CDN bundle
+        run: npm run build
+
+      - name: Cross-site check
+        run: npm run test:cross-site
         env:
           VITRIN_API_URL: http://127.0.0.1:8190
           VITRIN_API_LOG: ${{ runner.temp }}/api.log
