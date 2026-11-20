@@ -131,6 +131,10 @@ export class Transport {
         headers,
         body: payload,
         signal,
+        // The SDK authenticates with a bearer token and has no use for a cookie or HTTP credentials.
+        // `fetch` defaults to `same-origin`, which would send the page's cookies if the page were
+        // on the API's own origin (M5 review, SK-1).
+        credentials: 'omit',
       });
     } catch (err) {
       if (timeoutController.signal.aborted) {

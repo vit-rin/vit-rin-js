@@ -103,7 +103,18 @@ const COMPETITION_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f
 const DEFAULT_TIMEOUT_MS = 10_000;
 const READY_RETRY_MS = 500;
 
-/** An exact origin: `new URL(x).origin === x`, so no path, no wildcard, no `null`. */
+/** A host name as it is written in a certificate: labels of letters, digits and hyphens. No `*`, no spaces. */
+const HOST_NAME = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
+/** A bracketed IPv6 address, as `URL.hostname` writes it. */
+const IPV6_HOST = /^\[[0-9a-f:]+\]$/i;
+/** The developer's own machine, the one place a token may travel over `http` (a browser treats these as secure). */
+const LOOPBACK = new Set(['localhost', '127.0.0.1', '[::1]']);
+
+/**
+ * An exact origin: `new URL(x).origin === x`, so no path, no wildcard, no `null`, over `https`. `http` is
+ * accepted for the developer's own machine alone: a token handed over `http` to a page anywhere else can be
+ * read or replaced on the way (M5 review, SK-2).
+ */
 function assertExactOrigins(origins: readonly string[]): string[] {
   if (origins.length === 0) {
     throw new HostError('host.origin_invalid', 'allowedParentOrigins is empty: no page could ever hand this Game a token.');
@@ -115,8 +126,14 @@ function assertExactOrigins(origins: readonly string[]): string[] {
     } catch {
       throw new HostError('host.origin_invalid', `allowedParentOrigins: "${origin}" is not an origin.`);
     }
-    if ((parsed.protocol !== 'https:' && parsed.protocol !== 'http:') || parsed.origin !== origin) {
-      throw new HostError('host.origin_invalid', `allowedParentOrigins: "${origin}" is not an exact http(s) origin.`);
+    const loopback = LOOPBACK.has(parsed.hostname);
+    const schemeOk = parsed.protocol === 'https:' || (parsed.protocol === 'http:' && loopback);
+    const hostOk = loopback || HOST_NAME.test(parsed.hostname) || IPV6_HOST.test(parsed.hostname);
+    if (!schemeOk || !hostOk || parsed.origin !== origin) {
+      throw new HostError(
+        'host.origin_invalid',
+        `allowedParentOrigins: "${origin}" is not an exact https origin (http is accepted for localhost only).`,
+      );
     }
     return origin;
   });

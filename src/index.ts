@@ -17,7 +17,7 @@ export { ApiError, NetworkError, RateLimitedError, TimeoutError, VitRinError, pa
 export type { ApiErrorBody, ApiErrorEnvelope, ApiFieldError } from './core/transport/errors';
 
 export { AuthClient, AuthError } from './core/auth';
-export type { AuthConfig, AuthEvent, RefreshedToken, StoredTokens } from './core/auth';
+export type { AuthConfig, AuthEvent, RefreshedToken, StoredTokens, TokenEventPayload } from './core/auth';
 
 export { CompetitionsClient, OpenSession } from './surfaces/competitions';
 export type { FinalizeOptions } from './surfaces/competitions';
